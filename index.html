@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lieferscheine 13.03.2026 – aboutwater</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=ASAP:wght@300;400;500;600;700&display=swap');
+
+    :root {
+      --primary-color: #1c5975;
+      --primary-dark: #154c66;
+      --primary-light: #3a7fa1;
+      --secondary-color: #667eea;
+      --accent-color: #764ba2;
+      --text-primary: #2c3e50;
+      --text-secondary: #7f8c8d;
+      --background-light: #f8fafc;
+      --white: #ffffff;
+      --shadow-light: 0 2px 10px rgba(28, 89, 117, 0.08);
+      --shadow-medium: 0 4px 20px rgba(28, 89, 117, 0.12);
+      --border-radius: 12px;
+      --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'ASAP', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+      color: var(--text-primary);
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Header */
+    .header {
+      background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 100%);
+      color: var(--white);
+      padding: 28px 24px;
+      text-align: center;
+      box-shadow: var(--shadow-medium);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .header::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: linear-gradient(45deg, rgba(255,255,255,0.08) 0%, transparent 50%, rgba(255,255,255,0.04) 100%);
+      pointer-events: none;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      margin-bottom: 16px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .logo-circle {
+      width: 60px; height: 60px;
+      background: linear-gradient(135deg, var(--primary-light) 0%, var(--primary-dark) 100%);
+      border-radius: 50%;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      border: 3px solid rgba(255,255,255,0.25);
+      box-shadow: var(--shadow-medium);
+      position: relative;
+    }
+
+    .logo-letter {
+      color: var(--white);
+      font-size: 26px; font-weight: 700;
+      line-height: 1; margin-top: -4px;
+    }
+
+    .logo-droplet {
+      width: 8px; height: 11px;
+      background: var(--white);
+      border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+      position: absolute; bottom: 8px; left: 50%;
+      transform: translateX(-50%);
+    }
+
+    .logo-text {
+      font-size: 26px; font-weight: 600;
+      text-transform: lowercase; letter-spacing: 1px;
+    }
+
+    .header h1 {
+      font-size: 1.8em; font-weight: 300;
+      letter-spacing: -0.3px;
+      position: relative; z-index: 1;
+    }
+
+    .header p {
+      font-size: 1em; opacity: 0.9;
+      margin-top: 4px;
+      position: relative; z-index: 1;
+    }
+
+    /* Stats bar */
+    .stats-bar {
+      background: var(--white);
+      margin: 16px;
+      padding: 20px 24px;
+      border-radius: var(--border-radius);
+      box-shadow: var(--shadow-light);
+      border: 1px solid rgba(0,0,0,0.05);
+      display: flex;
+      gap: 24px;
+      align-items: center;
+      flex-wrap: wrap;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .stats-bar::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 3px;
+      background: linear-gradient(90deg, var(--primary-color), var(--secondary-color), var(--accent-color));
+    }
+
+    .stat {
+      text-align: center;
+      padding: 12px 20px;
+      background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+      border-radius: 10px;
+      border: 1px solid rgba(0,0,0,0.04);
+      min-width: 90px;
+      transition: var(--transition);
+    }
+
+    .stat:hover { transform: translateY(-2px); box-shadow: var(--shadow-light); }
+
+    .stat-number {
+      font-size: 1.8em; font-weight: 700;
+      color: var(--primary-color); line-height: 1;
+    }
+
+    .stat-label {
+      font-size: 11px; font-weight: 600;
+      color: var(--text-secondary);
+      text-transform: uppercase; letter-spacing: 0.5px;
+      margin-top: 4px;
+    }
+
+    .stats-title {
+      font-weight: 600; font-size: 14px;
+      color: var(--text-secondary);
+      text-transform: uppercase; letter-spacing: 0.5px;
+      margin-right: auto;
+    }
+
+    /* Map */
+    .map-wrapper {
+      margin: 0 16px 16px;
+      border-radius: var(--border-radius);
+      overflow: hidden;
+      box-shadow: var(--shadow-medium);
+      position: relative;
+    }
+
+    #map {
+      width: 100%;
+      height: calc(100vh - 260px);
+      min-height: 500px;
+    }
+
+    /* Legend */
+    .legend {
+      position: absolute;
+      bottom: 20px; left: 20px;
+      background: rgba(255,255,255,0.96);
+      padding: 16px 20px;
+      border-radius: var(--border-radius);
+      box-shadow: var(--shadow-light);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(0,0,0,0.05);
+      z-index: 1000;
+      min-width: 160px;
+    }
+
+    .legend h4 {
+      font-size: 12px; font-weight: 700;
+      color: var(--text-primary);
+      text-transform: uppercase; letter-spacing: 0.5px;
+      margin-bottom: 12px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid #e2e8f0;
+    }
+
+    .legend-item {
+      display: flex; align-items: center;
+      gap: 10px; margin-bottom: 8px;
+    }
+
+    .legend-dot {
+      width: 14px; height: 14px;
+      border-radius: 50%;
+      border: 2px solid rgba(255,255,255,0.8);
+      box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+      flex-shrink: 0;
+    }
+
+    .legend-item span {
+      font-size: 12px; font-weight: 500;
+      color: var(--text-secondary);
+    }
+
+    /* Lager filter */
+    .filter-panel {
+      position: absolute;
+      top: 16px; right: 16px;
+      background: rgba(255,255,255,0.96);
+      padding: 16px;
+      border-radius: var(--border-radius);
+      box-shadow: var(--shadow-light);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(0,0,0,0.05);
+      z-index: 1000;
+      max-width: 200px;
+    }
+
+    .filter-panel h4 {
+      font-size: 11px; font-weight: 700;
+      color: var(--text-secondary);
+      text-transform: uppercase; letter-spacing: 0.5px;
+      margin-bottom: 10px;
+    }
+
+    .filter-btn {
+      display: block; width: 100%;
+      text-align: left;
+      padding: 6px 10px;
+      margin-bottom: 4px;
+      border: none; border-radius: 6px;
+      cursor: pointer;
+      font-family: 'ASAP', sans-serif;
+      font-size: 12px; font-weight: 500;
+      transition: var(--transition);
+      background: #f1f5f9;
+      color: var(--text-primary);
+    }
+
+    .filter-btn:hover { background: #e2e8f0; }
+    .filter-btn.active { background: var(--primary-color); color: var(--white); }
+
+    /* Loading overlay */
+    #loading {
+      position: fixed; inset: 0;
+      background: rgba(255,255,255,0.97);
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      z-index: 9999;
+      backdrop-filter: blur(8px);
+    }
+
+    .loading-logo {
+      display: flex; align-items: center; gap: 14px;
+      margin-bottom: 32px;
+    }
+
+    .loading-circle {
+      width: 56px; height: 56px;
+      background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 100%);
+      border-radius: 50%;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      position: relative;
+      box-shadow: var(--shadow-medium);
+    }
+
+    .loading-circle .logo-letter { font-size: 24px; }
+    .loading-circle .logo-droplet { width: 7px; height: 10px; bottom: 7px; }
+
+    .loading-brand {
+      font-size: 22px; font-weight: 600;
+      color: var(--primary-color);
+      text-transform: lowercase; letter-spacing: 1px;
+    }
+
+    .spinner {
+      width: 48px; height: 48px;
+      border: 4px solid #e2e8f0;
+      border-top: 4px solid var(--primary-color);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin-bottom: 20px;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    #loading-text {
+      font-size: 16px; font-weight: 500;
+      color: var(--text-primary); margin-bottom: 20px;
+    }
+
+    #loading-sub {
+      font-size: 13px; color: var(--text-secondary);
+      margin-bottom: 20px;
+    }
+
+    .progress-bar {
+      width: 320px; height: 6px;
+      background: #e2e8f0; border-radius: 3px;
+      overflow: hidden;
+    }
+
+    #progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+      border-radius: 3px;
+      width: 0%;
+      transition: width 0.4s ease;
+    }
+
+    /* Popup */
+    .popup-content {
+      font-family: 'ASAP', sans-serif;
+      min-width: 220px;
+    }
+
+    .popup-header {
+      font-size: 15px; font-weight: 600;
+      color: var(--text-primary);
+      border-bottom: 2px solid var(--primary-color);
+      padding-bottom: 8px; margin-bottom: 10px;
+    }
+
+    .popup-row {
+      display: flex; justify-content: space-between;
+      padding: 5px 0;
+      border-bottom: 1px solid #f1f3f4;
+      gap: 8px;
+    }
+    .popup-row:last-child { border-bottom: none; }
+
+    .popup-label {
+      font-size: 11px; font-weight: 600;
+      color: var(--text-secondary);
+      text-transform: uppercase; letter-spacing: 0.4px;
+      white-space: nowrap;
+    }
+
+    .popup-value {
+      font-size: 12px; font-weight: 500;
+      color: var(--text-primary);
+      text-align: right;
+    }
+
+    .popup-badge {
+      display: inline-block;
+      padding: 2px 8px; border-radius: 10px;
+      font-size: 10px; font-weight: 600;
+      text-transform: uppercase; letter-spacing: 0.4px;
+    }
+
+    .badge-ja { background: #d4edda; color: #155724; }
+    .badge-nein { background: #fff3cd; color: #856404; }
+
+    .popup-count {
+      background: var(--primary-color);
+      color: white;
+      padding: 2px 8px; border-radius: 10px;
+      font-size: 11px; font-weight: 600;
+    }
+
+    /* Leaflet overrides */
+    .leaflet-popup-content-wrapper {
+      border-radius: var(--border-radius) !important;
+      box-shadow: var(--shadow-medium) !important;
+      padding: 16px !important;
+    }
+    .leaflet-popup-content { margin: 0 !important; }
+    .leaflet-control-zoom {
+      border: none !important;
+      box-shadow: var(--shadow-light) !important;
+    }
+    .leaflet-control-zoom a {
+      background: var(--white) !important;
+      color: var(--text-primary) !important;
+      border-color: rgba(0,0,0,0.08) !important;
+      font-family: 'ASAP', sans-serif !important;
+    }
+    .leaflet-control-zoom a:hover {
+      background: var(--primary-color) !important;
+      color: var(--white) !important;
+    }
+  </style>
+</head>
+<body>
+
+<!-- Loading overlay -->
+<div id="loading">
+  <div class="loading-logo">
+    <div class="loading-circle">
+      <span class="logo-letter">a</span>
+      <div class="logo-droplet"></div>
+    </div>
+    <span class="loading-brand">aboutwater</span>
+  </div>
+  <div class="spinner"></div>
+  <div id="loading-text">Adressen werden geocodiert…</div>
+  <div id="loading-sub">Bitte warten</div>
+  <div class="progress-bar">
+    <div id="progress-fill"></div>
+  </div>
+</div>
+
+<!-- Page -->
+<div class="header">
+  <div class="logo">
+    <div class="logo-circle">
+      <span class="logo-letter">a</span>
+      <div class="logo-droplet"></div>
+    </div>
+    <span class="logo-text">aboutwater</span>
+  </div>
+  <h1>Lieferscheine – 13. März 2026</h1>
+  <p>Lieferstandorte auf der Karte</p>
+</div>
+
+<div class="stats-bar">
+  <span class="stats-title">Übersicht</span>
+  <div class="stat">
+    <div class="stat-number" id="stat-total">—</div>
+    <div class="stat-label">Lieferscheine</div>
+  </div>
+  <div class="stat">
+    <div class="stat-number" id="stat-locations">—</div>
+    <div class="stat-label">Standorte</div>
+  </div>
+  <div class="stat">
+    <div class="stat-number" id="stat-lager">—</div>
+    <div class="stat-label">Lager</div>
+  </div>
+  <div class="stat">
+    <div class="stat-number" id="stat-geprueft">—</div>
+    <div class="stat-label">Geprüft</div>
+  </div>
+</div>
+
+<div class="map-wrapper">
+  <div id="map"></div>
+
+  <div class="legend">
+    <h4>Lager</h4>
+    <div id="legend-items"></div>
+  </div>
+
+  <div class="filter-panel">
+    <h4>Filter</h4>
+    <button class="filter-btn active" onclick="filterLager('all', this)">Alle</button>
+    <div id="filter-buttons"></div>
+  </div>
+</div>
+
+<script>
+// ── Raw delivery data from lieferschine.csv (13.03.2026) ──────────────────────
+const DELIVERIES = [
+  { ls:"LS76092",  auftrags:"114843",      lager:"AMW Auersperg",         geprueft:"ja",   bearbeiter:"Logistik",            kundennr:"22980", kunde:"Physiotherapie Martin Herre",              strasse:"Geschwister-Scholl-Straße 4",          plz:"14513", ort:"Teltow",                    land:"DE" },
+  { ls:"LS76394",  auftrags:"115148",      lager:"aboutwater Bünde",      geprueft:"ja",   bearbeiter:"Logistik",            kundennr:"26853", kunde:"AUGUST STORCK KG",                         strasse:"Paulinenweg 12",                       plz:"33790", ort:"Halle (Westf.)",            land:"DE" },
+  { ls:"LS76424",  auftrags:"115178",      lager:"aboutwater Bünde",      geprueft:"ja",   bearbeiter:"Logistik",            kundennr:"26853", kunde:"AUGUST STORCK KG",                         strasse:"Paulinenweg 12",                       plz:"33790", ort:"Halle (Westf.)",            land:"DE" },
+  { ls:"LS76435",  auftrags:"115189",      lager:"aboutwater Bünde",      geprueft:"ja",   bearbeiter:"Logistik",            kundennr:"26853", kunde:"AUGUST STORCK KG",                         strasse:"Paulinenweg 12",                       plz:"33790", ort:"Halle (Westf.)",            land:"DE" },
+  { ls:"LS76438",  auftrags:"115191",      lager:"aboutwater Bünde",      geprueft:"ja",   bearbeiter:"Logistik",            kundennr:"26853", kunde:"AUGUST STORCK KG",                         strasse:"Paulinenweg 12",                       plz:"33790", ort:"Halle (Westf.)",            land:"DE" },
+  { ls:"LS76453",  auftrags:"115205",      lager:"aboutwater Bünde",      geprueft:"ja",   bearbeiter:"Logistik",            kundennr:"26853", kunde:"AUGUST STORCK KG",                         strasse:"Paulinenweg 12",                       plz:"33790", ort:"Halle (Westf.)",            land:"DE" },
+  { ls:"LS76942",  auftrags:"116574",      lager:"VST Plep",              geprueft:"ja",   bearbeiter:"Petra Gräf",          kundennr:"22395", kunde:"Gymnasium Nieder-Olm",                     strasse:"Karl-Sieben-Str. 39",                  plz:"55268", ort:"Nieder-Olm",                land:"DE" },
+  { ls:"LS76943",  auftrags:"116574",      lager:"VST Plep",              geprueft:"ja",   bearbeiter:"Petra Gräf",          kundennr:"22395", kunde:"Gymnasium Nieder-Olm",                     strasse:"Karl-Sieben-Str. 39",                  plz:"55268", ort:"Nieder-Olm",                land:"DE" },
+  { ls:"LS76957",  auftrags:"116590",      lager:"Planegg",               geprueft:"ja",   bearbeiter:"Estaline Philander",  kundennr:"20255", kunde:"Rebike Mobility GmbH",                     strasse:"Aidenbachstraße 54",                   plz:"81379", ort:"München",                   land:"DE" },
+  { ls:"LS77017",  auftrags:"116640",      lager:"Planegg",               geprueft:"ja",   bearbeiter:"Sönke Rocho",         kundennr:"20359", kunde:"TSCNET Services GmbH",                     strasse:"Weihenstephaner Str. 9",               plz:"81673", ort:"München",                   land:"DE" },
+  { ls:"LS77031",  auftrags:"",           lager:"Planegg",               geprueft:"ja",   bearbeiter:"Petra Gräf",          kundennr:"21493", kunde:"Autodesk GmbH",                            strasse:"Balanstr. 71 a",                       plz:"81541", ort:"München",                   land:"DE" },
+  { ls:"LS77040",  auftrags:"116661",      lager:"AMW Auersperg",         geprueft:"ja",   bearbeiter:"Estaline Philander",  kundennr:"25254", kunde:"Oberlinklinik gGmbH",                      strasse:"Rudolf-Breitscheid-Str. 24",           plz:"14482", ort:"Potsdam",                   land:"DE" },
+  { ls:"LS77041",  auftrags:"116665",      lager:"AMW Auersperg",         geprueft:"ja",   bearbeiter:"Andreas Pöppe",       kundennr:"25254", kunde:"Oberlinklinik gGmbH",                      strasse:"Rudolf-Breitscheid-Str. 24",           plz:"14482", ort:"Potsdam",                   land:"DE" },
+  { ls:"LS77042",  auftrags:"116666",      lager:"AMW Auersperg",         geprueft:"ja",   bearbeiter:"Andreas Pöppe",       kundennr:"22067", kunde:"Hach Lange GmbH",                          strasse:"Königsweg 10",                         plz:"14163", ort:"Berlin",                    land:"DE" },
+  { ls:"LS77045",  auftrags:"116669",      lager:"aboutwater Frankfurt",  geprueft:"ja",   bearbeiter:"Carmen Berger",       kundennr:"26578", kunde:"VOLTARIS GmbH",                            strasse:"Voltastraße 3",                        plz:"67133", ort:"Maxdorf",                   land:"DE" },
+  { ls:"LS77100",  auftrags:"116712",      lager:"Planegg",               geprueft:"ja",   bearbeiter:"Florian Gräf",        kundennr:"20708", kunde:"Kyffhäuser Waterworld",                    strasse:"Brauereistraße 4",                     plz:"06556", ort:"Artern",                    land:"DE" },
+  { ls:"LS77134",  auftrags:"116742",      lager:"Planegg",               geprueft:"nein", bearbeiter:"Max Sanktjohanser",   kundennr:"27340", kunde:"Stefanie Denkert (Ruderverein Rauxel)",    strasse:"Falkenstr. 28",                        plz:"44577", ort:"Castrop-Rauxel",            land:"DE" },
+  { ls:"LS77149",  auftrags:"116755",      lager:"VST Plep",              geprueft:"ja",   bearbeiter:"Andreas Pöppe",       kundennr:"23956", kunde:"GLOBUS Logistik GmbH & Co. KG",            strasse:"Globusallee",                          plz:"55411", ort:"Bingen",                    land:"DE" },
+  { ls:"LS77171",  auftrags:"116774",      lager:"Planegg",               geprueft:"ja",   bearbeiter:"Estaline Philander",  kundennr:"20849", kunde:"TTI, Inc.",                                strasse:"Junkerstraße 1",                       plz:"82178", ort:"Puchheim",                  land:"DE" },
+  { ls:"LS77176",  auftrags:"116780",      lager:"Planegg",               geprueft:"ja",   bearbeiter:"Estaline Philander",  kundennr:"22186", kunde:"Pension Sewald",                           strasse:"Valentinstr. 4",                       plz:"82335", ort:"Berg",                      land:"DE" },
+  { ls:"LS77196",  auftrags:"116587",      lager:"Planegg",               geprueft:"ja",   bearbeiter:"Florian Gräf",        kundennr:"20234", kunde:"Bühler-Catering GmbH",                     strasse:"Industriestr. 2b",                     plz:"76275", ort:"Ettlingen",                 land:"DE" },
+  { ls:"LS77202",  auftrags:"116794",      lager:"Emons",                 geprueft:"nein", bearbeiter:"Christian Irrgang",   kundennr:"20298", kunde:"Atlantis Trinkwassertechnik GmbH",         strasse:"Kornstr. 4",                           plz:"79258", ort:"Hartheim",                  land:"DE" },
+  { ls:"LS77205",  auftrags:"116800",      lager:"Planegg",               geprueft:"ja",   bearbeiter:"Sönke Rocho",         kundennr:"21539", kunde:"Maas & Kollegen",                          strasse:"Forstenrieder Allee 72",               plz:"81476", ort:"München",                   land:"DE" },
+  { ls:"LS77209",  auftrags:"116805",      lager:"Planegg",               geprueft:"ja",   bearbeiter:"Rene Kühn",           kundennr:"27346", kunde:"Purazell GmbH",                            strasse:"Jahnstr. 8/1",                         plz:"70771", ort:"Leinfelden-Echterdingen",   land:"DE" },
+  { ls:"LS77211-1",auftrags:"116804",      lager:"Planegg",               geprueft:"ja",   bearbeiter:"Florian Gräf",        kundennr:"27345", kunde:"H. Maurer GmbH & Co.KG",                   strasse:"Dr.-Kurt-Steim-Strasse 7",             plz:"78713", ort:"Schramberg",                land:"DE" },
+  { ls:"LS77222",  auftrags:"116815",      lager:"Planegg",               geprueft:"ja",   bearbeiter:"Estaline Philander",  kundennr:"21258", kunde:"Coffice Betriebsverpflegung KG",           strasse:"Achen 10",                             plz:"83137", ort:"Schonstett",                land:"DE" },
+  { ls:"LS77225",  auftrags:"116462",      lager:"Emons",                 geprueft:"ja",   bearbeiter:"Florian Gräf",        kundennr:"20963", kunde:"K+H Automatendienst GmbH",                 strasse:"Mark I 22",                            plz:"59269", ort:"Beckum",                    land:"DE" },
+  { ls:"LS77671",  auftrags:"117272",      lager:"Kyffhäuser",            geprueft:"ja",   bearbeiter:"Estaline Philander",  kundennr:"26162", kunde:"Falck Notfallrettung Dorfchemnitz",        strasse:"An den Gütern 5",                      plz:"08297", ort:"Dorfchemnitz",              land:"DE" },
+  { ls:"LS77673",  auftrags:"117274",      lager:"Kyffhäuser",            geprueft:"ja",   bearbeiter:"Estaline Philander",  kundennr:"26163", kunde:"Falck Notfallrettung Olbernhau",           strasse:"Unterer Flöhaweg 8a",                  plz:"09526", ort:"Olbernhau",                 land:"DE" },
+  { ls:"LS77674",  auftrags:"117275",      lager:"Kyffhäuser",            geprueft:"ja",   bearbeiter:"Estaline Philander",  kundennr:"26164", kunde:"Falck Notfallrettung Pockau-Lengenfeld",   strasse:"Buchener Straße 2",                    plz:"09509", ort:"Pockau-Lengenfeld",         land:"DE" },
+  { ls:"LS77675",  auftrags:"117276",      lager:"Kyffhäuser",            geprueft:"ja",   bearbeiter:"Estaline Philander",  kundennr:"26165", kunde:"Falck Notfallrettung Thalheim",            strasse:"Am Stollen 1",                         plz:"09380", ort:"Thalheim",                  land:"DE" },
+  { ls:"LS77677",  auftrags:"117278",      lager:"Kyffhäuser",            geprueft:"ja",   bearbeiter:"Estaline Philander",  kundennr:"26160", kunde:"Falck Notfallrettung Burkhardtsdorf",      strasse:"Turmstr. 11b",                         plz:"09235", ort:"Burkhardtsdorf",            land:"DE" },
+  { ls:"LS77680",  auftrags:"117281",      lager:"Planegg",               geprueft:"ja",   bearbeiter:"Estaline Philander",  kundennr:"24026", kunde:"Haemalab Onkologisches Zentrum Freising",  strasse:"Weizengasse 2",                        plz:"85354", ort:"Freising",                  land:"DE" },
+  { ls:"LS77685",  auftrags:"117286",      lager:"Planegg",               geprueft:"nein", bearbeiter:"Rene Kühn",           kundennr:"23742", kunde:"St. Rochus-Hospital Telgte GmbH",          strasse:"Am Rochus-Hospital 1",                 plz:"48291", ort:"Telgte",                    land:"DE" },
+  { ls:"LS77686",  auftrags:"117287",      lager:"aboutwater Frankfurt",  geprueft:"nein", bearbeiter:"Carmen Berger",       kundennr:"26203", kunde:"Involas Institut für berufliche Bildung",  strasse:"Herrnstraße 53",                       plz:"63065", ort:"Offenbach",                 land:"DE" },
+  { ls:"LS77688",  auftrags:"",           lager:"aboutwater Frankfurt",  geprueft:"nein", bearbeiter:"Carmen Berger",       kundennr:"26338", kunde:"HELI EUROPE Headquarter GmbH",             strasse:"Grüner Weg 14",                        plz:"61169", ort:"Friedberg (Hessen)",        land:"DE" },
+  { ls:"LS77690",  auftrags:"117289",      lager:"AMW Auersperg",         geprueft:"nein", bearbeiter:"Petra Gräf",          kundennr:"24728", kunde:"Berufsbildungswerk im Oberlinhaus gGmbH",  strasse:"Steinstraße 80-84",                    plz:"14480", ort:"Potsdam",                   land:"DE" },
+  { ls:"LS77691",  auftrags:"117291",      lager:"STK Service",           geprueft:"nein", bearbeiter:"Carmen Berger",       kundennr:"21237", kunde:"Berufstrainingszentrum Rhein-Ruhr gGmbH",  strasse:"Bebelstr. 56",                         plz:"46049", ort:"Oberhausen",                land:"DE" },
+  { ls:"LS77692",  auftrags:"117292",      lager:"Planegg",               geprueft:"nein", bearbeiter:"Carmen Berger",       kundennr:"24236", kunde:"Bayerische Immobilien Management GmbH",    strasse:"Kastenbauerstraße 2-6",                plz:"81677", ort:"München",                   land:"DE" },
+  { ls:"LS77694",  auftrags:"117294",      lager:"Planegg",               geprueft:"nein", bearbeiter:"Carmen Berger",       kundennr:"25857", kunde:"AT Härtetechnik GmbH",                     strasse:"Michael-Haselbeck-Str. 24",            plz:"85640", ort:"Putzbrunn",                 land:"DE" },
+  { ls:"LS77695",  auftrags:"117295",      lager:"Kyffhäuser",            geprueft:"nein", bearbeiter:"Carmen Berger",       kundennr:"22775", kunde:"kW-rent GmbH",                             strasse:"Waldstraße 28",                        plz:"04509", ort:"Krositz",                   land:"DE" },
+  { ls:"LS77696",  auftrags:"117296",      lager:"Planegg",               geprueft:"nein", bearbeiter:"Carmen Berger",       kundennr:"26924", kunde:"Natalie Wagner",                           strasse:"Bessere Zukunft 6a",                   plz:"82166", ort:"Gräfelfing",                land:"DE" },
+  { ls:"LS77698",  auftrags:"117298",      lager:"Planegg",               geprueft:"ja",   bearbeiter:"Carmen Berger",       kundennr:"25736", kunde:"Steuerberatung Schaal",                    strasse:"Leonrodstr. 54",                       plz:"80636", ort:"München",                   land:"DE" },
+  { ls:"LS77700",  auftrags:"",           lager:"AMW Auersperg",         geprueft:"nein", bearbeiter:"Carmen Berger",       kundennr:"24728", kunde:"Berufsbildungswerk im Oberlinhaus gGmbH",  strasse:"Steinstraße 80-84",                    plz:"14480", ort:"Potsdam",                   land:"DE" },
+  { ls:"LS77703",  auftrags:"117303",      lager:"Planegg",               geprueft:"nein", bearbeiter:"Carmen Berger",       kundennr:"24776", kunde:"Max-Planck-Förderstiftung",                strasse:"Aldringenstr. 4",                      plz:"80639", ort:"München",                   land:"DE" },
+  { ls:"LS76105 MBU", auftrags:"114856",   lager:"Gänshirt-Aufmbruch",   geprueft:"nein", bearbeiter:"Rene Kühn",           kundennr:"23338", kunde:"Deutsche Post AG (Le Gastro)",             strasse:"Kaubendenstr. 11",                     plz:"52078", ort:"Aachen",                    land:"DE" },
+  { ls:"LS77705",  auftrags:"117304",      lager:"CJM",                   geprueft:"nein", bearbeiter:"Carmen Berger",       kundennr:"27090", kunde:"BäckerMann Backwaren und Feinkost GmbH",  strasse:"Südwestkorso 9",                       plz:"12161", ort:"Berlin",                    land:"DE" },
+  { ls:"LS77706",  auftrags:"117306",      lager:"Emons",                 geprueft:"nein", bearbeiter:"Christian Irrgang",   kundennr:"20500", kunde:"Automaten Reinhardt GmbH & Co.KG",        strasse:"Zum Tälchen 5",                        plz:"01723", ort:"Kesselsdorf",               land:"DE" },
+  { ls:"LS77707",  auftrags:"117305",      lager:"CJM",                   geprueft:"nein", bearbeiter:"Carmen Berger",       kundennr:"27090", kunde:"BäckerMann Backwaren und Feinkost GmbH",  strasse:"Pariser Str. 20",                      plz:"10707", ort:"Berlin",                    land:"DE" },
+  { ls:"LS75872 MBU", auftrags:"114633",   lager:"VST Schörling",        geprueft:"nein", bearbeiter:"Rene Kühn",           kundennr:"23338", kunde:"Deutsche Post AG – München Flughafen",    strasse:"Südallee",                             plz:"85356", ort:"München",                   land:"DE" },
+  { ls:"LS77710",  auftrags:"117308",      lager:"Planegg",               geprueft:"nein", bearbeiter:"Christian Irrgang",   kundennr:"22445", kunde:"Josef Schedlbauer",                        strasse:"Schlehenweg 12",                       plz:"94360", ort:"Mitterfels",                land:"DE" },
+  { ls:"LS75871 MBU", auftrags:"114632",   lager:"VST Schörling",        geprueft:"nein", bearbeiter:"Rene Kühn",           kundennr:"23338", kunde:"Deutsche Post AG – München Flughafen",    strasse:"Südallee",                             plz:"85356", ort:"München",                   land:"DE" },
+  { ls:"LS75874 MBU", auftrags:"114634",   lager:"VST Schörling",        geprueft:"nein", bearbeiter:"Rene Kühn",           kundennr:"23338", kunde:"Deutsche Post AG – München Flughafen",    strasse:"Südallee",                             plz:"85356", ort:"München",                   land:"DE" },
+  { ls:"LS75870 MBU", auftrags:"114631",   lager:"VST Schörling",        geprueft:"nein", bearbeiter:"Rene Kühn",           kundennr:"23338", kunde:"Deutsche Post AG – München Flughafen",    strasse:"Südallee",                             plz:"85356", ort:"München",                   land:"DE" },
+  { ls:"LS75869 MBU", auftrags:"114630",   lager:"VST Schörling",        geprueft:"nein", bearbeiter:"Rene Kühn",           kundennr:"23338", kunde:"Deutsche Post AG – München Flughafen",    strasse:"Südallee",                             plz:"85356", ort:"München",                   land:"DE" },
+  { ls:"LS74256 MBU", auftrags:"112125",   lager:"VST Schörling",        geprueft:"nein", bearbeiter:"Rene Kühn",           kundennr:"23338", kunde:"Deutsche Post AG – Unterschleißheim",     strasse:"Siemensstr. 12A",                      plz:"85716", ort:"Unterschleißheim",          land:"DE" },
+  { ls:"LS77717",  auftrags:"117310",      lager:"VST Schörling",        geprueft:"nein", bearbeiter:"Rene Kühn",           kundennr:"22000", kunde:"HEINE Optotechnik GmbH & Co. KG",         strasse:"Dornierstraße 6",                      plz:"82205", ort:"Gilching",                  land:"DE" },
+  { ls:"LS77718",  auftrags:"117311",      lager:"Planegg",               geprueft:"nein", bearbeiter:"Carmen Berger",       kundennr:"26110", kunde:"Ramada Munich Messe – Aspire Munich GmbH",strasse:"Stahlgruberring 45",                   plz:"81829", ort:"München",                   land:"DE" },
+  { ls:"LS77719",  auftrags:"114312",      lager:"VST Schörling",        geprueft:"nein", bearbeiter:"Petra Gräf",          kundennr:"22791", kunde:"Vidia GmbH",                               strasse:"Bürkleinstraße 10",                    plz:"80538", ort:"München",                   land:"DE" },
+  { ls:"LS77721",  auftrags:"117312",      lager:"Planegg",               geprueft:"nein", bearbeiter:"Carmen Berger",       kundennr:"24202", kunde:"Berufsfachschule für Pflege",              strasse:"Heinz-Goerke-Str. 5",                  plz:"81377", ort:"München",                   land:"DE" },
+  { ls:"BVE 26000072", auftrags:"114475",  lager:"Planegg",               geprueft:"ja",   bearbeiter:"Herr Hommel",         kundennr:"25000", kunde:"aboutwater Zrt (Hungary)",                 strasse:"Bárándi u 26-28",                      plz:"8000",  ort:"Székesfehérvár",            land:"HU" },
+  { ls:"LS77726",  auftrags:"117313",      lager:"AQUATRADE Bram",        geprueft:"nein", bearbeiter:"Carmen Berger",       kundennr:"27321", kunde:"Endress+Hauser (Deutschland) GmbH+Co.KG", strasse:"Am Stadtrand 54",                      plz:"22047", ort:"Hamburg",                   land:"DE" },
+  { ls:"LS77727",  auftrags:"117314",      lager:"Planegg",               geprueft:"nein", bearbeiter:"Carmen Berger",       kundennr:"25884", kunde:"Stelioplast Roland Stengel",               strasse:"Lena-Christ-Straße 2",                 plz:"82031", ort:"Grünwald",                  land:"DE" },
+  { ls:"LS77731",  auftrags:"117315",      lager:"Planegg",               geprueft:"nein", bearbeiter:"Josefine Mättig",     kundennr:"27162", kunde:"Schrooten GmbH",                           strasse:"Höffgeshofweg 17-19",                  plz:"47807", ort:"Krefeld",                   land:"DE" },
+  { ls:"LS77732",  auftrags:"117316",      lager:"VST Schörling",        geprueft:"nein", bearbeiter:"Andreas Pöppe",       kundennr:"24333", kunde:"Bayerische Landesbrandversicherung",       strasse:"Warngauer Str. 30",                    plz:"81539", ort:"München",                   land:"DE" },
+  { ls:"LS77734",  auftrags:"117317",      lager:"Planegg",               geprueft:"ja",   bearbeiter:"Josefine Mättig",     kundennr:"21771", kunde:"Josefine Mättig",                          strasse:"Hügelstr. 23",                         plz:"82178", ort:"Puchheim",                  land:"DE" },
+  { ls:"LS77735",  auftrags:"117319",      lager:"Planegg",               geprueft:"ja",   bearbeiter:"Josefine Mättig",     kundennr:"20481", kunde:"Christian Irrgang",                        strasse:"Marbachstr. 19",                       plz:"81369", ort:"München",                   land:"DE" },
+  { ls:"LS77736",  auftrags:"",           lager:"Planegg",               geprueft:"nein", bearbeiter:"Carmen Berger",       kundennr:"24641", kunde:"Brustdiagnostik München",                  strasse:"Sonnenstraße 29 / 4.OG",               plz:"80331", ort:"München",                   land:"DE" },
+  { ls:"LS77739",  auftrags:"",           lager:"Planegg",               geprueft:"ja",   bearbeiter:"Rene Kühn",           kundennr:"20772", kunde:"Crystal Water",                            strasse:"Rosenheimer Str. 34",                  plz:"85635", ort:"Höhenkirchen",              land:"DE" },
+];
+
+// ── Colour palette per Lager ─────────────────────────────────────────────────
+const LAGER_COLORS = {
+  "Planegg":               "#1c5975",
+  "AMW Auersperg":         "#667eea",
+  "aboutwater Bünde":      "#28a745",
+  "aboutwater Frankfurt":  "#fd7e14",
+  "VST Plep":              "#764ba2",
+  "VST Schörling":         "#e83e8c",
+  "Kyffhäuser":            "#20c997",
+  "Emons":                 "#dc3545",
+  "STK Service":           "#6f42c1",
+  "CJM":                   "#17a2b8",
+  "AQUATRADE Bram":        "#ffc107",
+  "Gänshirt-Aufmbruch":   "#6c757d",
+};
+
+function getLagerColor(lager) {
+  return LAGER_COLORS[lager] || "#95a5a6";
+}
+
+// ── Geocoding via Nominatim ───────────────────────────────────────────────────
+const geoCache = {};
+
+function delay(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+async function geocode(plz, ort, land) {
+  const key = `${plz}|${land}`;
+  if (geoCache[key]) return geoCache[key];
+
+  const q = `${plz} ${ort}, ${land}`;
+  const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(q)}&format=json&limit=1&countrycodes=${land.toLowerCase()}`;
+
+  try {
+    const r = await fetch(url, { headers: { 'User-Agent': 'aboutwater_lieferschein_map/1.0' } });
+    const data = await r.json();
+    if (data.length > 0) {
+      const coord = { lat: parseFloat(data[0].lat), lng: parseFloat(data[0].lon) };
+      geoCache[key] = coord;
+      return coord;
+    }
+  } catch(e) { console.warn('Geocode failed:', q, e); }
+  return null;
+}
+
+// ── Map initialisation ───────────────────────────────────────────────────────
+const map = L.map('map', {
+  center: [51.2, 10.4],
+  zoom: 6,
+  zoomControl: true,
+});
+
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+  maxZoom: 18,
+}).addTo(map);
+
+// Marker layer groups
+const allMarkers = [];
+const lagerGroups = {};
+let allLayers = L.layerGroup().addTo(map);
+
+function makeMarkerIcon(color) {
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 36" width="24" height="36">
+    <path d="M12 0C5.4 0 0 5.4 0 12c0 9 12 24 12 24s12-15 12-24c0-6.6-5.4-12-12-12z"
+          fill="${color}" stroke="white" stroke-width="1.5"/>
+    <circle cx="12" cy="12" r="4" fill="white" opacity="0.9"/>
+  </svg>`;
+  return L.divIcon({
+    html: svg,
+    className: '',
+    iconSize: [24, 36],
+    iconAnchor: [12, 36],
+    popupAnchor: [0, -38],
+  });
+}
+
+function buildPopup(group) {
+  const first = group[0];
+  const color = getLagerColor(first.lager);
+  const geprueftCount = group.filter(d => d.geprueft === 'ja').length;
+
+  let lsRows = group.map(d =>
+    `<div class="popup-row">
+      <span class="popup-label">LS-Nr.</span>
+      <span class="popup-value">${d.ls}</span>
+    </div>`
+  ).join('');
+
+  return `<div class="popup-content">
+    <div class="popup-header" style="border-color:${color}">${first.kunde}</div>
+    <div class="popup-row">
+      <span class="popup-label">Adresse</span>
+      <span class="popup-value">${first.strasse}, ${first.plz} ${first.ort}</span>
+    </div>
+    <div class="popup-row">
+      <span class="popup-label">Lager</span>
+      <span class="popup-value" style="color:${color};font-weight:600">${first.lager}</span>
+    </div>
+    <div class="popup-row">
+      <span class="popup-label">Lieferscheine</span>
+      <span class="popup-value"><span class="popup-count">${group.length}</span></span>
+    </div>
+    ${lsRows}
+    <div class="popup-row">
+      <span class="popup-label">Geprüft</span>
+      <span class="popup-value">${geprueftCount}/${group.length} <span class="popup-badge badge-ja">ja</span></span>
+    </div>
+    <div class="popup-row">
+      <span class="popup-label">Bearbeiter</span>
+      <span class="popup-value">${[...new Set(group.map(d=>d.bearbeiter))].join(', ')}</span>
+    </div>
+  </div>`;
+}
+
+// ── Filter logic ─────────────────────────────────────────────────────────────
+function filterLager(name, btn) {
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+
+  allLayers.clearLayers();
+
+  allMarkers.forEach(({ marker, lager }) => {
+    if (name === 'all' || lager === name) {
+      allLayers.addLayer(marker);
+    }
+  });
+}
+
+// ── Build legend & filter buttons ────────────────────────────────────────────
+function buildUI(lagers) {
+  const legendEl = document.getElementById('legend-items');
+  const filterEl = document.getElementById('filter-buttons');
+
+  lagers.forEach(lager => {
+    const color = getLagerColor(lager);
+    legendEl.innerHTML += `
+      <div class="legend-item">
+        <div class="legend-dot" style="background:${color}"></div>
+        <span>${lager}</span>
+      </div>`;
+
+    const btn = document.createElement('button');
+    btn.className = 'filter-btn';
+    btn.textContent = lager;
+    btn.style.borderLeft = `3px solid ${color}`;
+    btn.onclick = function() { filterLager(lager, this); };
+    filterEl.appendChild(btn);
+  });
+}
+
+// ── Main: geocode & place markers ────────────────────────────────────────────
+async function init() {
+  // Group deliveries by unique PLZ+kunde combo (same address = same marker)
+  const groups = {};
+  DELIVERIES.forEach(d => {
+    const key = `${d.plz}|${d.ort}|${d.kunde}`;
+    if (!groups[key]) groups[key] = [];
+    groups[key].push(d);
+  });
+
+  const groupKeys = Object.keys(groups);
+  const uniquePlzSet = {};
+  groupKeys.forEach(k => {
+    const d = groups[k][0];
+    uniquePlzSet[`${d.plz}|${d.land}`] = d;
+  });
+  const uniqueLocations = Object.values(uniquePlzSet);
+
+  let done = 0;
+  const total = uniqueLocations.length;
+
+  // Pre-geocode unique postal codes
+  for (const d of uniqueLocations) {
+    document.getElementById('loading-text').textContent = `Geocodierung: ${d.plz} ${d.ort}`;
+    document.getElementById('loading-sub').textContent = `${done + 1} von ${total} Standorten`;
+    document.getElementById('progress-fill').style.width = `${Math.round((done / total) * 100)}%`;
+    await geocode(d.plz, d.ort, d.land);
+    done++;
+    await delay(1100); // Nominatim rate limit: 1 req/sec
+  }
+
+  document.getElementById('progress-fill').style.width = '100%';
+  document.getElementById('loading-text').textContent = 'Karte wird erstellt…';
+
+  // Place markers
+  const lagerSet = new Set();
+  let placedCount = 0;
+
+  for (const key of groupKeys) {
+    const group = groups[key];
+    const first = group[0];
+    const coord = geoCache[`${first.plz}|${first.land}`];
+    if (!coord) continue;
+
+    lagerSet.add(first.lager);
+
+    // Small random jitter for same-location markers
+    const jitLat = coord.lat + (Math.random() - 0.5) * 0.003;
+    const jitLng = coord.lng + (Math.random() - 0.5) * 0.003;
+
+    const color = getLagerColor(first.lager);
+    const marker = L.marker([jitLat, jitLng], { icon: makeMarkerIcon(color) })
+      .bindPopup(buildPopup(group), { maxWidth: 300 });
+
+    allMarkers.push({ marker, lager: first.lager });
+    allLayers.addLayer(marker);
+    placedCount++;
+  }
+
+  // Stats
+  document.getElementById('stat-total').textContent = DELIVERIES.length;
+  document.getElementById('stat-locations').textContent = placedCount;
+  document.getElementById('stat-lager').textContent = lagerSet.size;
+  document.getElementById('stat-geprueft').textContent =
+    DELIVERIES.filter(d => d.geprueft === 'ja').length;
+
+  buildUI([...lagerSet].sort());
+
+  // Hide loading
+  document.getElementById('loading').style.display = 'none';
+}
+
+init();
+</script>
+</body>
+</html>
