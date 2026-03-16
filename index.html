@@ -35,60 +35,59 @@
     }
 
     /* ── Header ── */
-    .header {
-      background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 100%);
-      color: var(--white);
-      padding: 24px 32px;
+    .header-logo-bar {
+      background: var(--white);
+      padding: 14px 28px;
       display: flex;
       align-items: center;
-      gap: 24px;
+      border-bottom: 1px solid #e2e8f0;
+    }
+
+    .header-logo {
+      height: 44px;
+      width: auto;
+      object-fit: contain;
+      display: block;
+    }
+
+    .header-title-bar {
+      background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 100%);
+      color: var(--white);
+      padding: 16px 28px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
       box-shadow: var(--shadow-medium);
       position: relative;
       overflow: hidden;
     }
 
-    .header::before {
+    .header-title-bar::before {
       content: '';
       position: absolute; inset: 0;
       background: linear-gradient(45deg, rgba(255,255,255,0.07) 0%, transparent 60%);
       pointer-events: none;
     }
 
-    .header-logo {
-      height: 52px;
-      width: auto;
-      object-fit: contain;
-      position: relative;
-      z-index: 1;
-      filter: brightness(0) invert(1);
+    .header-title-bar h1 {
+      font-size: 1.4em;
+      font-weight: 600;
+      letter-spacing: -0.2px;
+      position: relative; z-index: 1;
+    }
+
+    .header-title-bar p {
+      font-size: 0.9em;
+      opacity: 0.85;
+      font-weight: 400;
+      position: relative; z-index: 1;
     }
 
     .header-divider {
-      width: 1px;
-      height: 40px;
-      background: rgba(255,255,255,0.3);
+      width: 1px; height: 28px;
+      background: rgba(255,255,255,0.35);
       flex-shrink: 0;
-      position: relative;
-      z-index: 1;
-    }
-
-    .header-text {
-      position: relative;
-      z-index: 1;
-    }
-
-    .header-text h1 {
-      font-size: 1.5em;
-      font-weight: 600;
-      letter-spacing: -0.2px;
-      line-height: 1.2;
-    }
-
-    .header-text p {
-      font-size: 0.9em;
-      opacity: 0.85;
-      margin-top: 3px;
-      font-weight: 400;
+      position: relative; z-index: 1;
     }
 
     /* ── Stats bar ── */
@@ -317,13 +316,13 @@
 </head>
 <body>
 
-<div class="header">
+<div class="header-logo-bar">
   <img src="Logo.png" alt="aboutwater" class="header-logo">
+</div>
+<div class="header-title-bar">
+  <h1>Lieferscheine – 13. März 2026</h1>
   <div class="header-divider"></div>
-  <div class="header-text">
-    <h1>Lieferscheine – 13. März 2026</h1>
-    <p>Lieferstandorte auf der Karte</p>
-  </div>
+  <p>Lieferstandorte auf der Karte</p>
 </div>
 
 <div class="stats-bar">
