@@ -70,86 +70,65 @@
       filter: brightness(0) invert(1);
     }
     .header-divider { width: 1px; height: 32px; background: rgba(255,255,255,0.25); flex-shrink: 0; }
-    .header-text { flex: 1; }
+    .header-text { flex: 1; min-width: 0; }
     .header-text h1 {
       font-size: 1.25em; font-weight: 700;
       color: var(--white); letter-spacing: -0.2px; line-height: 1.2;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
     }
     .header-text p { font-size: 0.8em; color: rgba(255,255,255,0.7); font-weight: 400; margin-top: 2px; }
 
-    /* ── Toolbar ── */
-    .toolbar {
-      background: var(--white);
-      border-bottom: 1px solid rgba(0,0,0,0.07);
-      padding: 10px 16px;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      box-shadow: 0 1px 8px rgba(28,89,117,0.07);
-    }
+    /* ── Date nav (lives inside the header) ── */
     .date-nav {
-      display: flex; align-items: center;
-      gap: 6px;
-      background: var(--bg);
-      border: 1px solid rgba(0,0,0,0.09);
-      border-radius: 9px;
-      padding: 4px 6px;
-    }
-    .nav-btn {
-      background: var(--white);
-      border: 1px solid rgba(0,0,0,0.1);
-      border-radius: 6px;
-      width: 32px; height: 32px;
-      cursor: pointer;
-      font-size: 13px; color: var(--primary);
-      display: flex; align-items: center; justify-content: center;
-      transition: var(--ease);
+      display: flex; align-items: center; gap: 4px;
+      background: rgba(255,255,255,0.12);
+      border: 1px solid rgba(255,255,255,0.22);
+      border-radius: 10px;
+      padding: 5px 8px;
       flex-shrink: 0;
     }
-    .nav-btn:hover:not(:disabled) { background: var(--primary); color: var(--white); border-color: var(--primary); }
-    .nav-btn:disabled { opacity: 0.3; cursor: not-allowed; }
-    .date-input-wrap { position: relative; display: flex; align-items: center; gap: 7px; }
-    .date-icon { font-size: 14px; color: var(--primary); flex-shrink: 0; }
+    .nav-btn {
+      background: rgba(255,255,255,0.15);
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 6px;
+      width: 28px; height: 28px;
+      cursor: pointer;
+      font-size: 11px; color: var(--white);
+      display: flex; align-items: center; justify-content: center;
+      transition: var(--ease); flex-shrink: 0;
+    }
+    .nav-btn:hover:not(:disabled) { background: rgba(255,255,255,0.3); }
+    .nav-btn:disabled { opacity: 0.25; cursor: not-allowed; }
     #datum-picker {
       border: none; background: transparent;
       font-family: 'ASAP', sans-serif;
-      font-size: 13px; font-weight: 600;
-      color: var(--text);
+      font-size: 12px; font-weight: 600;
+      color: var(--white);
       cursor: pointer; outline: none;
-      padding: 2px 4px;
+      padding: 2px 4px; min-width: 110px;
     }
     #datum-picker::-webkit-calendar-picker-indicator {
-      opacity: 0.5; cursor: pointer;
-      filter: invert(20%) sepia(60%) saturate(400%) hue-rotate(175deg);
+      filter: invert(1); opacity: 0.7; cursor: pointer;
     }
-    .toolbar-spacer { flex: 1; }
-    .date-label {
-      font-size: 13px; font-weight: 600;
-      color: var(--text); white-space: nowrap;
-      padding: 0 4px;
-    }
+
+    /* ── Download button (lives inside the header) ── */
     .download-btn {
-      display: flex; align-items: center; gap: 7px;
-      background: var(--primary);
-      color: var(--white);
-      border: none; border-radius: 8px;
-      padding: 8px 16px;
+      display: flex; align-items: center; gap: 6px;
+      background: rgba(255,255,255,0.18);
+      border: 1px solid rgba(255,255,255,0.28);
+      border-radius: 8px;
+      padding: 6px 13px;
       font-family: 'ASAP', sans-serif;
-      font-size: 13px; font-weight: 600;
+      font-size: 12px; font-weight: 600;
+      color: var(--white);
       cursor: pointer;
       transition: var(--ease);
-      white-space: nowrap;
-      box-shadow: 0 2px 8px rgba(28,89,117,0.25);
+      white-space: nowrap; flex-shrink: 0;
+      backdrop-filter: blur(4px);
     }
-    .download-btn:hover { background: var(--primary-dark); box-shadow: 0 4px 14px rgba(28,89,117,0.35); }
+    .download-btn:hover { background: rgba(255,255,255,0.28); }
     .download-btn:active { transform: translateY(1px); }
     .download-btn svg { flex-shrink: 0; }
-    .no-data-msg {
-      font-size: 12px; color: var(--text-muted);
-      background: #fff8e1; border: 1px solid #ffe082;
-      border-radius: 7px; padding: 4px 10px;
-      display: none;
-    }
 
     /* ── Stats bar ── */
     .stats-bar {
@@ -194,7 +173,7 @@
       border: 1px solid rgba(0,0,0,0.07);
       position: relative;
     }
-    #map { width: 100%; height: calc(100vh - 218px); min-height: 520px; }
+    #map { width: 100%; height: calc(100vh - 196px); min-height: 520px; }
 
     /* ── Loading overlay ── */
     .loading-overlay {
@@ -330,9 +309,8 @@
       to   { opacity: 1; transform: translateY(0); }
     }
     .header    { animation: fadeInUp 0.35s cubic-bezier(0.4,0,0.2,1) both; }
-    .toolbar   { animation: fadeInUp 0.38s cubic-bezier(0.4,0,0.2,1) 0.06s both; }
-    .stats-bar { animation: fadeInUp 0.4s  cubic-bezier(0.4,0,0.2,1) 0.12s both; }
-    .map-wrapper { animation: fadeInUp 0.45s cubic-bezier(0.4,0,0.2,1) 0.18s both; }
+    .stats-bar { animation: fadeInUp 0.4s  cubic-bezier(0.4,0,0.2,1) 0.10s both; }
+    .map-wrapper { animation: fadeInUp 0.45s cubic-bezier(0.4,0,0.2,1) 0.16s both; }
     .stat { animation: fadeInUp 0.4s cubic-bezier(0.4,0,0.2,1) both; }
     .stat:nth-child(1) { animation-delay: 0.14s; }
     .stat:nth-child(2) { animation-delay: 0.20s; }
@@ -356,8 +334,8 @@
 
     @media (max-width: 640px) {
       .stats-bar { grid-template-columns: repeat(2, 1fr); }
-      .toolbar { flex-wrap: wrap; }
-      .toolbar-spacer { display: none; }
+      .header { flex-wrap: wrap; height: auto; padding: 10px 16px; gap: 10px; }
+      .download-btn span { display: none; }
     }
   </style>
 </head>
@@ -372,27 +350,19 @@
     <h1 id="header-title">Lieferscheine</h1>
     <p>Lieferstandorte auf der Karte</p>
   </div>
-</header>
-
-<div class="toolbar">
   <div class="date-nav">
     <button class="nav-btn" id="btn-prev" title="Vorheriger Tag" onclick="navigateDatum(-1)" disabled>&#9664;</button>
-    <div class="date-input-wrap">
-      <span class="date-icon">📅</span>
-      <input type="date" id="datum-picker" onchange="datumWaehlen(this.value)">
-    </div>
+    <input type="date" id="datum-picker" onchange="datumWaehlen(this.value)">
     <button class="nav-btn" id="btn-next" title="Nächster Tag" onclick="navigateDatum(1)" disabled>&#9654;</button>
   </div>
-  <span class="date-label" id="date-label-long">– wird geladen –</span>
-  <span class="no-data-msg" id="no-data-msg">Kein Daten für dieses Datum</span>
-  <div class="toolbar-spacer"></div>
+  <div class="header-divider"></div>
   <button class="download-btn" onclick="csvHerunterladen()" title="CSV für dieses Datum herunterladen">
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
       <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
     </svg>
-    CSV herunterladen
+    <span>CSV herunterladen</span>
   </button>
-</div>
+</header>
 
 <div class="stats-bar">
   <div class="stat">
@@ -681,9 +651,6 @@ function datumWaehlen(inputValue) {
   } else {
     // Snap back to current valid date
     document.getElementById('datum-picker').value = csvDatumZuInput(AKTUELLES_DATUM);
-    const msg = document.getElementById('no-data-msg');
-    msg.style.display = 'inline';
-    setTimeout(() => { msg.style.display = 'none'; }, 3000);
   }
 }
 
@@ -693,10 +660,8 @@ function datumAnzeigen(datum) {
   // Sync date picker
   document.getElementById('datum-picker').value = csvDatumZuInput(datum);
 
-  // Update header & toolbar label
-  const formatted = formatDatumDE(datum);
-  document.getElementById('header-title').textContent = 'Lieferscheine – ' + formatted;
-  document.getElementById('date-label-long').textContent = formatted;
+  // Update header title
+  document.getElementById('header-title').textContent = 'Lieferscheine – ' + formatDatumDE(datum);
   document.title = `Lieferscheine ${datum} – aboutwater`;
 
   // Update prev/next button state
