@@ -637,20 +637,19 @@ function csvParsieren(text) {
 async function csvLaden() {
   const overlay = document.getElementById('loading-overlay');
   try {
-    // Fetch CSV + customer coords in parallel
-    const [csvResp, jsonResp] = await Promise.all([
+    // Fetch CSV + slim coords in parallel (coords.json is 29 KB, not 3.3 MB)
+    const [csvResp, coordsResp] = await Promise.all([
       fetch('./lieferschine.csv'),
-      fetch('./customers_for_map.json'),
+      fetch('./coords.json'),
     ]);
-    if (!csvResp.ok)  throw new Error(`CSV: HTTP ${csvResp.status}`);
-    if (!jsonResp.ok) throw new Error(`Kundendaten: HTTP ${jsonResp.status}`);
+    if (!csvResp.ok)    throw new Error(`CSV: HTTP ${csvResp.status}`);
+    if (!coordsResp.ok) throw new Error(`Koordinaten: HTTP ${coordsResp.status}`);
 
-    const [text, jsonData] = await Promise.all([csvResp.text(), jsonResp.json()]);
+    const [text, coordsData] = await Promise.all([csvResp.text(), coordsResp.json()]);
 
-    // Build customer-number → coords lookup
-    (jsonData.customers || []).forEach(c => {
-      if (c.latitude && c.longitude)
-        KUNDEN_COORDS[String(c.customer_number)] = { lat: c.latitude, lng: c.longitude };
+    // coords.json format: { "kundennr": [lat, lng], … }
+    Object.entries(coordsData).forEach(([k, v]) => {
+      KUNDEN_COORDS[k] = { lat: v[0], lng: v[1] };
     });
 
     ALLE_LIEFERSCHEINE = csvParsieren(text);
