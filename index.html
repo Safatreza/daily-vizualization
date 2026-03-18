@@ -482,18 +482,50 @@ const PLZ_COORDS = {
 // LAGER COLOUR PALETTE
 // ═══════════════════════════════════════════════════════════════════════════════
 const LAGER_FARBEN = {
-  "Planegg":               "#1c5975",
-  "AMW Auersperg":         "#667eea",
-  "aboutwater Bünde":      "#28a745",
-  "aboutwater Frankfurt":  "#fd7e14",
-  "VST Plep":              "#764ba2",
-  "VST Schörling":         "#e83e8c",
-  "Kyffhäuser":            "#20c997",
-  "Emons":                 "#dc3545",
-  "STK Service":           "#6f42c1",
-  "CJM":                   "#17a2b8",
-  "AQUATRADE Bram":        "#f0a500",
-  "Gänshirt-Aufmbruch":   "#6c757d",
+  // ── Original lager ──
+  "Planegg":                    "#1c5975",
+  "AMW Auersperg":              "#667eea",
+  "aboutwater Bünde":           "#28a745",
+  "aboutwater Frankfurt":       "#fd7e14",
+  "VST Plep":                   "#764ba2",
+  "VST Schörling":              "#e83e8c",
+  "Kyffhäuser":                 "#20c997",
+  "Emons":                      "#dc3545",
+  "STK Service":                "#6f42c1",
+  "CJM":                        "#17a2b8",
+  "AQUATRADE Bram":             "#f0a500",
+  "Gänshirt-Aufmbruch":         "#6c757d",
+  // ── Extended lager (2026 data) ──
+  "AQUATRADE Glinde":           "#e67e22",
+  "Aquatec - Bremen":           "#3498db",
+  "Aquatec - Grömitz":          "#9b59b6",
+  "Aquatec - Reinbek":          "#1abc9c",
+  "Attila AS":                  "#e74c3c",
+  "Auer":                       "#f39c12",
+  "Bastian":                    "#27ae60",
+  "Berlin Wein König":          "#8e44ad",
+  "Blupura":                    "#16a085",
+  "Brengartner Trinkwass":      "#d35400",
+  "Bühler":                     "#2980b9",
+  "Deutscher":                  "#7f8c8d",
+  "Dolphin, Bonstetten":        "#c0392b",
+  "Ewatec":                     "#2ecc71",
+  "GWA":                        "#e91e63",
+  "Gengenbach":                 "#ff5722",
+  "Gleisner":                   "#795548",
+  "Hess":                       "#607d8b",
+  "Ines Rötz Appen":            "#9c27b0",
+  "K&E Klötzl":                 "#4caf50",
+  "Liberanome & Panichel":      "#ff9800",
+  "Magnum Kuhnhenne":           "#03a9f4",
+  "Neumann":                    "#8bc34a",
+  "Nothhelfer/Ulm+50km":        "#ff5252",
+  "POSPRINT":                   "#ab47bc",
+  "Planegg Rep.Lager":          "#0d7a9c",
+  "Schöttle - Haiterbach":      "#78909c",
+  "Strecke":                    "#26c6da",
+  "Teamblue Bad Münder":        "#5c6bc0",
+  "natürlich H2O":              "#42a5f5",
 };
 
 const MONATE_DE = ['Januar','Februar','März','April','Mai','Juni','Juli','August','September','Oktober','November','Dezember'];
@@ -505,6 +537,7 @@ let ALLE_LIEFERSCHEINE = [];   // All records from CSV
 let VERFUEGBARE_DATEN  = [];   // Sorted array of "DD.MM.YYYY" strings that have data
 let AKTUELLES_DATUM    = null; // Currently displayed date
 let alleMarker         = [];
+let KUNDEN_COORDS      = {};   // customerNumber (string) → {lat, lng} from customers_for_map.json
 
 // ═══════════════════════════════════════════════════════════════════════════════
 // MAP SETUP
@@ -604,9 +637,22 @@ function csvParsieren(text) {
 async function csvLaden() {
   const overlay = document.getElementById('loading-overlay');
   try {
-    const resp = await fetch('./lieferschine.csv');
-    if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
-    const text = await resp.text();
+    // Fetch CSV + customer coords in parallel
+    const [csvResp, jsonResp] = await Promise.all([
+      fetch('./lieferschine.csv'),
+      fetch('./customers_for_map.json'),
+    ]);
+    if (!csvResp.ok)  throw new Error(`CSV: HTTP ${csvResp.status}`);
+    if (!jsonResp.ok) throw new Error(`Kundendaten: HTTP ${jsonResp.status}`);
+
+    const [text, jsonData] = await Promise.all([csvResp.text(), jsonResp.json()]);
+
+    // Build customer-number → coords lookup
+    (jsonData.customers || []).forEach(c => {
+      if (c.latitude && c.longitude)
+        KUNDEN_COORDS[String(c.customer_number)] = { lat: c.latitude, lng: c.longitude };
+    });
+
     ALLE_LIEFERSCHEINE = csvParsieren(text);
 
     // Collect unique dates and sort ascending
@@ -699,8 +745,9 @@ function karteAktualisieren(lieferscheine) {
 
   Object.values(gruppen).forEach(gruppe => {
     const erster = gruppe[0];
-    const koord  = PLZ_COORDS[`${erster.plz}|${erster.land}`];
-    if (!koord) { console.warn('Keine Koordinaten:', erster.plz, erster.land, erster.ort); return; }
+    // Try per-customer coords first (accurate), fall back to PLZ centre
+    const koord = KUNDEN_COORDS[erster.kundennr] || PLZ_COORDS[`${erster.plz}|${erster.land}`];
+    if (!koord) { console.warn('Keine Koordinaten:', erster.kundennr, erster.plz, erster.ort); return; }
 
     lagerSet.add(erster.lager);
     lagerCounts[erster.lager] = (lagerCounts[erster.lager] || 0) + gruppe.length;
