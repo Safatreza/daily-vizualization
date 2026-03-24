@@ -579,10 +579,10 @@ function inputDatumZuCSV(d) {
   const [year, month, day] = d.split('-');
   return `${day}.${month}.${year}`;
 }
-// "13.03.2026" → "13. März 2026"
+// "13.03.2026" → "13.03.2026"
 function formatDatumDE(d) {
   const [day, month, year] = d.split('.');
-  return `${parseInt(day)}. ${MONATE_DE[parseInt(month)-1]} ${year}`;
+  return `${day.padStart(2,'0')}.${month.padStart(2,'0')}.${year}`;
 }
 
 // ═══════════════════════════════════════════════════════════════════════════════
