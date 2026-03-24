@@ -419,63 +419,545 @@
 // To add a new PLZ: look up on nominatim.openstreetmap.org, add entry below.
 // ═══════════════════════════════════════════════════════════════════════════════
 const PLZ_COORDS = {
+  // ── Berlin ──────────────────────────────────────────────────────────────────
+  "10115|DE": {lat:52.5320, lng:13.3850},  // Berlin-Mitte
+  "10117|DE": {lat:52.5163, lng:13.3777},  // Berlin-Mitte
+  "10119|DE": {lat:52.5273, lng:13.4066},  // Berlin-Mitte
+  "10178|DE": {lat:52.5203, lng:13.4065},  // Berlin-Mitte
+  "10179|DE": {lat:52.5131, lng:13.4175},  // Berlin-Mitte
+  "10243|DE": {lat:52.5075, lng:13.4545},  // Berlin-Friedrichshain
+  "10245|DE": {lat:52.5002, lng:13.4598},  // Berlin-Friedrichshain
+  "10318|DE": {lat:52.4938, lng:13.5134},  // Berlin-Lichtenberg
+  "10365|DE": {lat:52.5066, lng:13.4974},  // Berlin-Lichtenberg
+  "10437|DE": {lat:52.5451, lng:13.4233},  // Berlin-Prenzlauer Berg
+  "10559|DE": {lat:52.5258, lng:13.3365},  // Berlin-Tiergarten
+  "10589|DE": {lat:52.5192, lng:13.2964},  // Berlin-Charlottenburg
+  "10623|DE": {lat:52.5078, lng:13.3181},  // Berlin-Charlottenburg
+  "10629|DE": {lat:52.4993, lng:13.2967},  // Berlin-Charlottenburg
+  "10707|DE": {lat:52.4993, lng:13.3134},  // Berlin (Wilmersdorf)
+  "10717|DE": {lat:52.4833, lng:13.3300},  // Berlin-Wilmersdorf
+  "10719|DE": {lat:52.4968, lng:13.3282},  // Berlin-Wilmersdorf
+  "10785|DE": {lat:52.5025, lng:13.3644},  // Berlin-Tiergarten
+  "10787|DE": {lat:52.5013, lng:13.3525},  // Berlin-Tiergarten
+  "10789|DE": {lat:52.5009, lng:13.3393},  // Berlin-Schöneberg
+  "10823|DE": {lat:52.4833, lng:13.3583},  // Berlin-Schöneberg
+  "10827|DE": {lat:52.4728, lng:13.3590},  // Berlin-Schöneberg
+  "10961|DE": {lat:52.4943, lng:13.3897},  // Berlin-Kreuzberg
+  "10967|DE": {lat:52.4879, lng:13.4006},  // Berlin-Kreuzberg
+  "10969|DE": {lat:52.4992, lng:13.4059},  // Berlin-Kreuzberg
+  "10997|DE": {lat:52.5016, lng:13.4399},  // Berlin-Kreuzberg
+  "12161|DE": {lat:52.4675, lng:13.3262},  // Berlin (Steglitz)
+  "13347|DE": {lat:52.5487, lng:13.3502},  // Berlin-Wedding
+  "14163|DE": {lat:52.4281, lng:13.2437},  // Berlin (Zehlendorf)
+  "14480|DE": {lat:52.3960, lng:13.0580},  // Potsdam
+  "14482|DE": {lat:52.4048, lng:13.0509},  // Potsdam
   "14513|DE": {lat:52.4016, lng:13.2746},  // Teltow
-  "33790|DE": {lat:52.0583, lng:8.3627},   // Halle (Westf.)
-  "55268|DE": {lat:49.9025, lng:8.2071},   // Nieder-Olm
+  // ── Hamburg / Schleswig-Holstein ───────────────────────────────────────────
+  "20095|DE": {lat:53.5487, lng:10.0073},  // Hamburg-Altstadt
+  "20097|DE": {lat:53.5488, lng:10.0254},  // Hamburg-Hammerbrook
+  "20099|DE": {lat:53.5561, lng:10.0196},  // Hamburg-St. Georg
+  "20251|DE": {lat:53.5821, lng:9.9785},   // Hamburg-Hoheluft
+  "20459|DE": {lat:53.5517, lng:9.9769},   // Hamburg-Neustadt
+  "20537|DE": {lat:53.5594, lng:10.0370},  // Hamburg-Hammerbrook
+  "20539|DE": {lat:53.5340, lng:10.0288},  // Hamburg-Hamm
+  "22047|DE": {lat:53.5667, lng:10.0048},  // Hamburg-Eimsbüttel
+  "21684|DE": {lat:53.5952, lng:9.4776},   // Stade
+  "21745|DE": {lat:53.7162, lng:9.1402},   // Hemmoor
+  "24106|DE": {lat:54.3133, lng:10.1342},  // Kiel
+  "24109|DE": {lat:54.3449, lng:10.0752},  // Kiel-Kronshagen
+  "24119|DE": {lat:54.3449, lng:10.0752},  // Kronshagen
+  "23743|DE": {lat:54.0454, lng:11.0040},  // Grömitz
+  "25746|DE": {lat:54.1953, lng:9.0961},   // Heide
+  "21218|DE": {lat:53.3948, lng:10.0017},  // Seevetal
+  "21493|DE": {lat:53.4082, lng:10.4316},  // Elmenhorst
+  // ── München (all inner-city and suburbs) ───────────────────────────────────
+  "80331|DE": {lat:48.1357, lng:11.5734},  // München
+  "80333|DE": {lat:48.1443, lng:11.5720},  // München
+  "80335|DE": {lat:48.1451, lng:11.5503},  // München
+  "80336|DE": {lat:48.1369, lng:11.5568},  // München
+  "80337|DE": {lat:48.1279, lng:11.5607},  // München
+  "80339|DE": {lat:48.1397, lng:11.5268},  // München
+  "80469|DE": {lat:48.1292, lng:11.5761},  // München-Isarvorstadt
+  "80538|DE": {lat:48.1427, lng:11.5949},  // München
+  "80539|DE": {lat:48.1516, lng:11.5847},  // München-Maxvorstadt
+  "80636|DE": {lat:48.1577, lng:11.5411},  // München
+  "80637|DE": {lat:48.1672, lng:11.5320},  // München-Neuhausen
+  "80638|DE": {lat:48.1674, lng:11.5162},  // München-Neuhausen
+  "80639|DE": {lat:48.1627, lng:11.5303},  // München
+  "80689|DE": {lat:48.1345, lng:11.4883},  // München-Laim
+  "80796|DE": {lat:48.1696, lng:11.5716},  // München-Schwabing
+  "80797|DE": {lat:48.1620, lng:11.5613},  // München-Schwabing
+  "80799|DE": {lat:48.1581, lng:11.5718},  // München-Schwabing
+  "80801|DE": {lat:48.1634, lng:11.5918},  // München-Schwabing-West
+  "80803|DE": {lat:48.1652, lng:11.5843},  // München-Schwabing
+  "80804|DE": {lat:48.1777, lng:11.5784},  // München-Schwabing
+  "80807|DE": {lat:48.1784, lng:11.5920},  // München-Milbertshofen
+  "80809|DE": {lat:48.1833, lng:11.5614},  // München-Milbertshofen
+  "80933|DE": {lat:48.2053, lng:11.5906},  // München-Feldmoching
+  "80935|DE": {lat:48.1995, lng:11.5642},  // München-Feldmoching
+  "80939|DE": {lat:48.1973, lng:11.6197},  // München-Freimann
+  "80999|DE": {lat:48.1724, lng:11.4508},  // München-Allach
+  "81241|DE": {lat:48.1450, lng:11.4710},  // München-Pasing
+  "81247|DE": {lat:48.1535, lng:11.4619},  // München-Pasing
+  "81249|DE": {lat:48.1637, lng:11.4272},  // München-Lochhausen
+  "81369|DE": {lat:48.1015, lng:11.5360},  // München
+  "81371|DE": {lat:48.1027, lng:11.5542},  // München-Sendling
+  "81373|DE": {lat:48.1094, lng:11.5268},  // München-Sendling
+  "81377|DE": {lat:48.0975, lng:11.5218},  // München
   "81379|DE": {lat:48.0934, lng:11.5068},  // München
-  "81673|DE": {lat:48.1302, lng:11.6196},  // München
+  "81473|DE": {lat:48.0855, lng:11.4985},  // München-Forstenried
+  "81476|DE": {lat:48.1002, lng:11.5136},  // München
+  "81477|DE": {lat:48.0866, lng:11.5341},  // München-Solln
+  "81539|DE": {lat:48.1115, lng:11.5939},  // München
   "81541|DE": {lat:48.1144, lng:11.6003},  // München
+  "81549|DE": {lat:48.0944, lng:11.6130},  // München-Giesing
+  "81667|DE": {lat:48.1254, lng:11.6214},  // München-Berg am Laim
+  "81669|DE": {lat:48.1178, lng:11.6183},  // München-Berg am Laim
+  "81671|DE": {lat:48.1283, lng:11.6404},  // München-Ramersdorf
+  "81673|DE": {lat:48.1302, lng:11.6196},  // München
+  "81675|DE": {lat:48.1393, lng:11.6098},  // München-Bogenhausen
+  "81677|DE": {lat:48.1380, lng:11.6084},  // München
+  "81679|DE": {lat:48.1491, lng:11.6212},  // München-Bogenhausen
+  "81735|DE": {lat:48.1124, lng:11.6628},  // München-Trudering
+  "81737|DE": {lat:48.1044, lng:11.6627},  // München-Trudering
+  "81739|DE": {lat:48.1004, lng:11.6506},  // München-Perlach
+  "81829|DE": {lat:48.1218, lng:11.6853},  // München
+  "81925|DE": {lat:48.1618, lng:11.6490},  // München-Bogenhausen
+  // ── München Region ─────────────────────────────────────────────────────────
+  "82031|DE": {lat:48.0463, lng:11.5279},  // Grünwald
+  "82041|DE": {lat:48.0157, lng:11.5867},  // Oberhaching
+  "82049|DE": {lat:47.9859, lng:11.4888},  // Pullach
+  "82054|DE": {lat:48.0642, lng:11.4337},  // Sauerlach
+  "82064|DE": {lat:47.9967, lng:11.3917},  // Strasslach
+  "82110|DE": {lat:48.1341, lng:11.3748},  // Germering
+  "82131|DE": {lat:48.0833, lng:11.4167},  // Stockdorf
+  "82140|DE": {lat:48.1955, lng:11.3147},  // Olching
+  "82152|DE": {lat:48.1042, lng:11.4236},  // Planegg
+  "82166|DE": {lat:48.1131, lng:11.4288},  // Gräfelfing
+  "82178|DE": {lat:48.1600, lng:11.3500},  // Puchheim
+  "82194|DE": {lat:48.0700, lng:11.2900},  // Gröbenzell
+  "82205|DE": {lat:48.1111, lng:11.2914},  // Gilching
+  "82211|DE": {lat:48.0943, lng:11.2614},  // Herrsching
+  "82216|DE": {lat:48.2197, lng:11.2522},  // Maisach
+  "82223|DE": {lat:48.1828, lng:11.2289},  // Eichenau
+  "82229|DE": {lat:48.1100, lng:11.1800},  // Seefeld
+  "82256|DE": {lat:48.2481, lng:11.2556},  // Fürstenfeldbruck
+  "82319|DE": {lat:47.9983, lng:11.3390},  // Starnberg
+  "82335|DE": {lat:47.9544, lng:11.1849},  // Berg (Starnberger See)
+  "82340|DE": {lat:47.9412, lng:11.2900},  // Feldafing
+  "82362|DE": {lat:47.8458, lng:11.1508},  // Weilheim
+  "82377|DE": {lat:47.7960, lng:11.1257},  // Penzberg
+  "82380|DE": {lat:47.7606, lng:11.0592},  // Peißenberg
+  "82386|DE": {lat:47.6937, lng:10.9917},  // Altenstadt
+  "82392|DE": {lat:47.8095, lng:10.9778},  // Habach
+  "82418|DE": {lat:47.7067, lng:11.1967},  // Murnau
+  "82431|DE": {lat:47.7244, lng:11.1861},  // Kochel
+  "82467|DE": {lat:47.4917, lng:11.0956},  // Garmisch-Partenkirchen
+  "83022|DE": {lat:47.8561, lng:12.1169},  // Rosenheim
+  "83026|DE": {lat:47.8369, lng:12.1458},  // Rosenheim
+  "83059|DE": {lat:47.8950, lng:12.2133},  // Kolbermoor
+  "83064|DE": {lat:47.8697, lng:12.0933},  // Raubling
+  "83067|DE": {lat:47.8763, lng:11.6959},  // Holzkirchen
+  "83071|DE": {lat:47.8413, lng:12.1844},  // Stephanskirchen
+  "83135|DE": {lat:47.9437, lng:12.0597},  // Schechen
+  "83137|DE": {lat:47.9527, lng:12.1422},  // Schonstett
+  "83209|DE": {lat:47.9045, lng:12.4750},  // Prien
+  "83395|DE": {lat:47.8569, lng:12.7033},  // Freilassing
+  "83435|DE": {lat:47.6941, lng:12.8540},  // Bad Reichenhall
+  "83512|DE": {lat:48.0613, lng:12.1656},  // Wasserburg am Inn
+  "83527|DE": {lat:48.0097, lng:12.2433},  // Haag i.OB
+  "83607|DE": {lat:47.7511, lng:11.7594},  // Miesbach
+  "83646|DE": {lat:47.7611, lng:11.5578},  // Bad Tölz
+  "83714|DE": {lat:47.7869, lng:11.8315},  // Miesbach
+  "84307|DE": {lat:48.5689, lng:12.4797},  // Eggenfelden
+  "84347|DE": {lat:48.4305, lng:12.9424},  // Pfarrkirchen
+  "84503|DE": {lat:48.2617, lng:12.6666},  // Altötting
+  "85235|DE": {lat:48.3109, lng:11.3847},  // Odelzhausen
+  "85247|DE": {lat:48.2717, lng:11.3489},  // Schwabhausen
+  "85276|DE": {lat:48.4167, lng:11.5333},  // Pfaffenhofen
+  "85283|DE": {lat:48.5487, lng:11.7900},  // Wolnzach
+  "85354|DE": {lat:48.3965, lng:11.7488},  // Freising
+  "85356|DE": {lat:48.3511, lng:11.7773},  // Flughafen München
+  "85375|DE": {lat:48.3127, lng:11.6779},  // Neufahrn
+  "85386|DE": {lat:48.3021, lng:11.6126},  // Eching
+  "85391|DE": {lat:48.4369, lng:11.6044},  // Allershausen
+  "85399|DE": {lat:48.3280, lng:11.7562},  // Hallbergmoos
+  "85410|DE": {lat:48.4174, lng:11.8553},  // Haag an der Amper
+  "85435|DE": {lat:48.3000, lng:11.9001},  // Erding
+  "85445|DE": {lat:48.2665, lng:11.8000},  // Oberding
+  "85457|DE": {lat:48.2224, lng:12.0164},  // Wörth
+  "85521|DE": {lat:48.0638, lng:11.6618},  // Ottobrunn
+  "85540|DE": {lat:48.1024, lng:11.7230},  // Haar
+  "85586|DE": {lat:48.0758, lng:11.9652},  // Poing/Ebersberg
+  "85609|DE": {lat:48.1740, lng:11.7526},  // Aschheim
+  "85622|DE": {lat:48.1043, lng:11.8190},  // Feldkirchen
+  "85635|DE": {lat:48.0297, lng:11.7274},  // Höhenkirchen-Siegertsbrunn
+  "85640|DE": {lat:48.0556, lng:11.7292},  // Putzbrunn
+  "85716|DE": {lat:48.2795, lng:11.5773},  // Unterschleißheim
+  "85737|DE": {lat:48.2262, lng:11.6874},  // Ismaning
+  "85757|DE": {lat:48.2200, lng:11.5041},  // Karlsfeld
+  "85774|DE": {lat:48.1941, lng:11.6468},  // Unterföhring
+  "85777|DE": {lat:48.2471, lng:11.5874},  // Fahrenzhausen
+  "86150|DE": {lat:48.3705, lng:10.8978},  // Augsburg
+  "86153|DE": {lat:48.3622, lng:10.9072},  // Augsburg
+  "86156|DE": {lat:48.3833, lng:10.8500},  // Augsburg
+  "86159|DE": {lat:48.3528, lng:10.9339},  // Augsburg
+  "86163|DE": {lat:48.3303, lng:10.9494},  // Augsburg
+  "86167|DE": {lat:48.3864, lng:10.9539},  // Augsburg
+  "86169|DE": {lat:48.4019, lng:10.9347},  // Augsburg
+  "86179|DE": {lat:48.3101, lng:10.9019},  // Augsburg
+  "86199|DE": {lat:48.3117, lng:10.8278},  // Augsburg-Haunstetten
+  "86368|DE": {lat:48.4127, lng:10.7675},  // Gersthofen
+  "86391|DE": {lat:48.4447, lng:10.7781},  // Stadtbergen
+  "86415|DE": {lat:48.4500, lng:10.9433},  // Mering
+  "86438|DE": {lat:48.3683, lng:10.7094},  // Kissing
+  "86441|DE": {lat:48.4167, lng:10.5994},  // Zusmarshausen
+  "86470|DE": {lat:48.2576, lng:10.4653},  // Thannhausen
+  "86899|DE": {lat:48.0476, lng:10.7744},  // Landsberg
+  "86916|DE": {lat:47.9786, lng:10.8906},  // Kaufering
+  "86920|DE": {lat:47.9289, lng:10.7803},  // Denklingen
+  "86941|DE": {lat:48.0108, lng:10.9561},  // Eresing
+  "86956|DE": {lat:47.8114, lng:10.9017},  // Schongau
+  "87437|DE": {lat:47.7231, lng:10.3134},  // Kempten
+  "87600|DE": {lat:47.7667, lng:10.4208},  // Kaufbeuren
+  "87629|DE": {lat:47.5514, lng:10.7386},  // Füssen
+  "87645|DE": {lat:47.5767, lng:10.6308},  // Schwangau
+  "87727|DE": {lat:48.0250, lng:10.2019},  // Babenhausen
+  "87787|DE": {lat:47.7617, lng:10.2033},  // Wolfertschwenden
+  "87988|DE": {lat:47.6592, lng:10.0944},  // Wangen
+  "88250|DE": {lat:47.7781, lng:9.6211},   // Weingarten
+  "88316|DE": {lat:47.6903, lng:10.0394},  // Isny
+  "88400|DE": {lat:47.9978, lng:9.6300},   // Biberach
+  "88477|DE": {lat:48.1233, lng:9.9244},   // Schwendi
+  "88512|DE": {lat:48.0519, lng:9.3589},   // Mengen
+  "89073|DE": {lat:48.4003, lng:9.9978},   // Ulm
+  "89250|DE": {lat:48.3244, lng:10.0425},  // Senden
+  "89331|DE": {lat:48.4636, lng:10.4153},  // Burgau
+  "89420|DE": {lat:48.6072, lng:10.5706},  // Höchstädt
+  // ── Bayern Nord (Franken) ──────────────────────────────────────────────────
+  "90402|DE": {lat:49.4521, lng:11.0768},  // Nürnberg
+  "90403|DE": {lat:49.4572, lng:11.0784},  // Nürnberg
+  "90408|DE": {lat:49.4803, lng:11.0856},  // Nürnberg
+  "90419|DE": {lat:49.4729, lng:11.0471},  // Nürnberg
+  "90429|DE": {lat:49.4579, lng:11.0411},  // Nürnberg
+  "90431|DE": {lat:49.4358, lng:11.0179},  // Nürnberg
+  "90439|DE": {lat:49.4396, lng:11.0647},  // Nürnberg
+  "90449|DE": {lat:49.4188, lng:11.0488},  // Nürnberg
+  "90451|DE": {lat:49.4015, lng:11.0655},  // Nürnberg
+  "90461|DE": {lat:49.4347, lng:11.1147},  // Nürnberg
+  "90471|DE": {lat:49.4219, lng:11.1284},  // Nürnberg
+  "90478|DE": {lat:49.4479, lng:11.1017},  // Nürnberg
+  "90489|DE": {lat:49.4683, lng:11.1141},  // Nürnberg
+  "90513|DE": {lat:49.4097, lng:10.9483},  // Zirndorf
+  "91052|DE": {lat:49.5960, lng:11.0044},  // Erlangen
+  "91058|DE": {lat:49.5745, lng:11.0250},  // Erlangen
+  "91207|DE": {lat:49.5127, lng:11.2817},  // Lauf an der Pegnitz
+  "91522|DE": {lat:49.3006, lng:10.5683},  // Ansbach
+  "92224|DE": {lat:49.3017, lng:12.0925},  // Amberg
+  "93047|DE": {lat:49.0201, lng:12.0979},  // Regensburg
+  "93053|DE": {lat:48.9833, lng:12.1000},  // Regensburg
+  "93055|DE": {lat:49.0055, lng:12.1432},  // Regensburg
+  "93059|DE": {lat:49.0333, lng:12.0833},  // Regensburg
+  "94036|DE": {lat:48.8895, lng:13.4517},  // Passau
+  "94360|DE": {lat:48.9029, lng:12.7706},  // Mitterfels
+  "94469|DE": {lat:48.8381, lng:12.9597},  // Deggendorf
+  "97070|DE": {lat:49.7949, lng:9.9353},   // Würzburg
+  "97074|DE": {lat:49.7697, lng:9.9636},   // Würzburg
+  "97076|DE": {lat:49.8157, lng:9.9128},   // Würzburg
+  "97080|DE": {lat:49.8000, lng:9.9800},   // Würzburg
+  "97082|DE": {lat:49.7820, lng:9.9836},   // Würzburg
+  "97084|DE": {lat:49.7700, lng:9.9900},   // Würzburg
+  "97199|DE": {lat:49.7283, lng:10.0994},  // Ochsenfurt
+  "97209|DE": {lat:49.7553, lng:9.8914},   // Veitshöchheim
+  "97421|DE": {lat:50.0697, lng:10.2252},  // Schweinfurt
+  "97616|DE": {lat:50.3550, lng:10.2350},  // Bad Neustadt
+  // ── Baden-Württemberg ──────────────────────────────────────────────────────
+  "70173|DE": {lat:48.7758, lng:9.1829},   // Stuttgart
+  "70176|DE": {lat:48.7729, lng:9.1630},   // Stuttgart
+  "70178|DE": {lat:48.7658, lng:9.1683},   // Stuttgart
+  "70182|DE": {lat:48.7739, lng:9.1988},   // Stuttgart
+  "70184|DE": {lat:48.7834, lng:9.2011},   // Stuttgart
+  "70190|DE": {lat:48.7966, lng:9.2017},   // Stuttgart
+  "70192|DE": {lat:48.8027, lng:9.1750},   // Stuttgart
+  "70197|DE": {lat:48.7773, lng:9.1467},   // Stuttgart
+  "70374|DE": {lat:48.8089, lng:9.2454},   // Stuttgart-Bad Cannstatt
+  "70469|DE": {lat:48.8194, lng:9.1569},   // Stuttgart-Feuerbach
+  "70499|DE": {lat:48.8378, lng:9.1172},   // Stuttgart-Weilimdorf
+  "70565|DE": {lat:48.7342, lng:9.1544},   // Stuttgart-Möhringen
+  "70597|DE": {lat:48.7186, lng:9.2033},   // Stuttgart-Degerloch
+  "70619|DE": {lat:48.7200, lng:9.2200},   // Stuttgart-Hedelfingen
+  "70771|DE": {lat:48.6924, lng:9.1448},   // Leinfelden-Echterdingen
+  "70794|DE": {lat:48.7047, lng:9.2342},   // Filderstadt
+  "71032|DE": {lat:48.7333, lng:9.0483},   // Böblingen
+  "71034|DE": {lat:48.6855, lng:9.0119},   // Böblingen
+  "71065|DE": {lat:48.6997, lng:9.0922},   // Sindelfingen
+  "71069|DE": {lat:48.7148, lng:9.0478},   // Sindelfingen
+  "71101|DE": {lat:48.7103, lng:9.0089},   // Schönaich
+  "71254|DE": {lat:48.7150, lng:9.0217},   // Ditzingen
+  "71384|DE": {lat:48.7867, lng:9.3789},   // Weinstadt
+  "71522|DE": {lat:48.8767, lng:9.3433},   // Backnang
+  "71549|DE": {lat:48.9081, lng:9.4367},   // Auenwald
+  "72070|DE": {lat:48.5199, lng:9.0582},   // Tübingen
+  "72072|DE": {lat:48.5199, lng:9.0582},   // Tübingen
+  "72076|DE": {lat:48.5355, lng:9.0714},   // Tübingen
+  "72108|DE": {lat:48.5131, lng:8.9386},   // Rottenburg
+  "72221|DE": {lat:48.4836, lng:8.7472},   // Haiterbach
+  "72336|DE": {lat:48.4997, lng:9.3831},   // Balingen
+  "72379|DE": {lat:48.4417, lng:9.0578},   // Hechingen
+  "72458|DE": {lat:48.2086, lng:9.0128},   // Albstadt
+  "72660|DE": {lat:48.5867, lng:9.3922},   // Beuren
+  "73033|DE": {lat:48.7026, lng:9.6538},   // Göppingen
+  "73035|DE": {lat:48.7026, lng:9.6538},   // Göppingen
+  "73098|DE": {lat:48.7092, lng:9.6219},   // Rechberghausen
+  "73262|DE": {lat:48.7258, lng:9.6558},   // Reichenbach
+  "73547|DE": {lat:48.8231, lng:9.7267},   // Lorch-Waldhausen
+  "74523|DE": {lat:49.1117, lng:9.7381},   // Schwäbisch Hall
+  "74638|DE": {lat:49.3050, lng:9.7683},   // Waldenburg
+  "76131|DE": {lat:49.0099, lng:8.4082},   // Karlsruhe
+  "76135|DE": {lat:49.0075, lng:8.3958},   // Karlsruhe
+  "76137|DE": {lat:48.9891, lng:8.4142},   // Karlsruhe
+  "76275|DE": {lat:48.9400, lng:8.4083},   // Ettlingen
+  "78048|DE": {lat:48.0539, lng:8.5308},   // Villingen-Schwenningen
+  "78713|DE": {lat:48.2246, lng:8.3842},   // Schramberg
+  "79108|DE": {lat:48.0227, lng:7.8264},   // Freiburg
+  "79258|DE": {lat:47.9318, lng:7.5595},   // Hartheim
+  "79261|DE": {lat:48.0781, lng:8.0683},   // Gutach
+  "79312|DE": {lat:48.1236, lng:7.8463},   // Emmendingen
+  "79539|DE": {lat:47.5589, lng:7.5947},   // Lörrach
+  "79618|DE": {lat:47.6456, lng:7.6753},   // Rheinfelden
+  // ── Hessen / Rheinland-Pfalz ───────────────────────────────────────────────
+  "55268|DE": {lat:49.9025, lng:8.2071},   // Nieder-Olm
+  "55411|DE": {lat:49.9675, lng:7.8987},   // Bingen
+  "60306|DE": {lat:50.1123, lng:8.6644},   // Frankfurt
+  "60308|DE": {lat:50.1200, lng:8.6636},   // Frankfurt
+  "60311|DE": {lat:50.1109, lng:8.6821},   // Frankfurt
+  "60313|DE": {lat:50.1130, lng:8.6871},   // Frankfurt
+  "60318|DE": {lat:50.1233, lng:8.6881},   // Frankfurt
+  "60322|DE": {lat:50.1303, lng:8.6736},   // Frankfurt
+  "60323|DE": {lat:50.1245, lng:8.6638},   // Frankfurt
+  "60325|DE": {lat:50.1153, lng:8.6681},   // Frankfurt
+  "60329|DE": {lat:50.1082, lng:8.6540},   // Frankfurt
+  "60385|DE": {lat:50.1229, lng:8.7067},   // Frankfurt-Bornheim
+  "60431|DE": {lat:50.1425, lng:8.6467},   // Frankfurt-Nordend
+  "60486|DE": {lat:50.1170, lng:8.6369},   // Frankfurt
+  "60528|DE": {lat:50.0811, lng:8.6669},   // Frankfurt-Niederrad
+  "60594|DE": {lat:50.0985, lng:8.6847},   // Frankfurt-Sachsenhausen
+  "60629|DE": {lat:50.0893, lng:8.6953},   // Frankfurt-Sachsenhausen
+  "61169|DE": {lat:50.3318, lng:8.7551},   // Friedberg (Hessen)
+  "61440|DE": {lat:50.2307, lng:8.6028},   // Oberursel
+  "63065|DE": {lat:50.1055, lng:8.7623},   // Offenbach
+  "63073|DE": {lat:50.0957, lng:8.7824},   // Offenbach
+  "63110|DE": {lat:50.0527, lng:8.8258},   // Rodgau
+  "63450|DE": {lat:50.0997, lng:8.9703},   // Hanau
+  "63739|DE": {lat:49.9767, lng:9.1444},   // Aschaffenburg
+  "65183|DE": {lat:50.0781, lng:8.2447},   // Wiesbaden
+  "65185|DE": {lat:50.0800, lng:8.2517},   // Wiesbaden
+  "65189|DE": {lat:50.0726, lng:8.2427},   // Wiesbaden
+  "65191|DE": {lat:50.0947, lng:8.2636},   // Wiesbaden
+  "65193|DE": {lat:50.0809, lng:8.2281},   // Wiesbaden
+  "65203|DE": {lat:50.0540, lng:8.2011},   // Wiesbaden-Biebrich
+  "67133|DE": {lat:49.5094, lng:8.2734},   // Maxdorf
+  "69115|DE": {lat:49.4075, lng:8.6936},   // Heidelberg
+  "69120|DE": {lat:49.4167, lng:8.6833},   // Heidelberg
+  // ── NRW ────────────────────────────────────────────────────────────────────
+  "40210|DE": {lat:51.2267, lng:6.7981},   // Düsseldorf
+  "40213|DE": {lat:51.2195, lng:6.7716},   // Düsseldorf
+  "40219|DE": {lat:51.2121, lng:6.7611},   // Düsseldorf
+  "40221|DE": {lat:51.2014, lng:6.7428},   // Düsseldorf
+  "40474|DE": {lat:51.2603, lng:6.7583},   // Düsseldorf-Lohausen
+  "44577|DE": {lat:51.5553, lng:7.3094},   // Castrop-Rauxel
+  "46049|DE": {lat:51.4697, lng:6.8516},   // Oberhausen
+  "47807|DE": {lat:51.3388, lng:6.5853},   // Krefeld
+  "48291|DE": {lat:51.9814, lng:7.7861},   // Telgte
+  "50667|DE": {lat:50.9387, lng:6.9571},   // Köln
+  "50672|DE": {lat:50.9403, lng:6.9417},   // Köln
+  "50676|DE": {lat:50.9270, lng:6.9472},   // Köln
+  "50823|DE": {lat:50.9571, lng:6.8908},   // Köln-Ehrenfeld
+  "50933|DE": {lat:50.9325, lng:6.8903},   // Köln-Lindenthal
+  "51063|DE": {lat:50.9694, lng:7.0469},   // Köln-Mülheim
+  "52078|DE": {lat:50.7795, lng:6.1085},   // Aachen
+  "59269|DE": {lat:51.7583, lng:8.0434},   // Beckum
+  // ── Niedersachsen / Bremen ─────────────────────────────────────────────────
+  "28195|DE": {lat:53.0785, lng:8.8017},   // Bremen
+  "30159|DE": {lat:52.3759, lng:9.7320},   // Hannover
+  "30163|DE": {lat:52.3883, lng:9.7261},   // Hannover
+  "30169|DE": {lat:52.3678, lng:9.7222},   // Hannover
+  "30173|DE": {lat:52.3571, lng:9.7381},   // Hannover
+  "30175|DE": {lat:52.3744, lng:9.7528},   // Hannover
+  "30177|DE": {lat:52.3928, lng:9.7528},   // Hannover
+  "30179|DE": {lat:52.3847, lng:9.7625},   // Hannover
+  "30449|DE": {lat:52.3751, lng:9.6893},   // Hannover-Linden
+  "30519|DE": {lat:52.3364, lng:9.8070},   // Hannover-Döhren
+  "30539|DE": {lat:52.3189, lng:9.7889},   // Hannover-Mittelfeld
+  "29410|DE": {lat:52.8521, lng:11.1517},  // Salzwedel
+  "21394|DE": {lat:53.2750, lng:10.4186},  // Südergellersen
+  // ── Sachsen / Thüringen ─────────────────────────────────────────────────────
+  "01067|DE": {lat:51.0608, lng:13.7212},  // Dresden
+  "01097|DE": {lat:51.0700, lng:13.7533},  // Dresden-Neustadt
+  "01099|DE": {lat:51.0768, lng:13.7726},  // Dresden
+  "01108|DE": {lat:51.1133, lng:13.7633},  // Dresden
+  "01139|DE": {lat:51.0981, lng:13.6686},  // Dresden
+  "01159|DE": {lat:51.0461, lng:13.6878},  // Dresden-Löbtau
+  "01189|DE": {lat:51.0169, lng:13.7306},  // Dresden-Coschütz
+  "01217|DE": {lat:51.0250, lng:13.7708},  // Dresden-Südvorstadt
+  "01219|DE": {lat:51.0197, lng:13.7858},  // Dresden-Striesen
+  "01277|DE": {lat:51.0269, lng:13.8033},  // Dresden-Blasewitz
+  "01307|DE": {lat:51.0528, lng:13.7869},  // Dresden-Johannstadt
+  "01309|DE": {lat:51.0554, lng:13.8050},  // Dresden-Blasewitz
+  "01723|DE": {lat:51.0765, lng:13.4811},  // Kesselsdorf
+  "01728|DE": {lat:50.9861, lng:13.5197},  // Bannewitz
+  "04103|DE": {lat:51.3358, lng:12.3877},  // Leipzig
+  "04105|DE": {lat:51.3501, lng:12.3800},  // Leipzig
+  "04107|DE": {lat:51.3322, lng:12.3737},  // Leipzig
+  "04109|DE": {lat:51.3398, lng:12.3667},  // Leipzig
+  "04229|DE": {lat:51.3236, lng:12.3147},  // Leipzig
+  "04275|DE": {lat:51.3131, lng:12.3914},  // Leipzig
+  "04509|DE": {lat:51.1694, lng:12.4348},  // Krositz
+  "04416|DE": {lat:51.2786, lng:12.2836},  // Markkleeberg
+  "06108|DE": {lat:51.4827, lng:11.9702},  // Halle
+  "06110|DE": {lat:51.4900, lng:11.9667},  // Halle
+  "06112|DE": {lat:51.5025, lng:11.9667},  // Halle
+  "06114|DE": {lat:51.5111, lng:11.9681},  // Halle
+  "06556|DE": {lat:51.3636, lng:11.2900},  // Artern
+  "08297|DE": {lat:50.6650, lng:13.0720},  // Dorfchemnitz
+  "09126|DE": {lat:50.8358, lng:12.9242},  // Chemnitz
+  "09235|DE": {lat:50.7378, lng:12.8478},  // Burkhardtsdorf
+  "09380|DE": {lat:50.7081, lng:12.8426},  // Thalheim
+  "09509|DE": {lat:50.7219, lng:13.1797},  // Pockau-Lengenfeld
+  "09526|DE": {lat:50.6672, lng:13.3316},  // Olbernhau
+  // ── Sonstige ───────────────────────────────────────────────────────────────
+  "14513|DE": {lat:52.4016, lng:13.2746},  // Teltow
+  "14480|DE": {lat:52.3960, lng:13.0580},  // Potsdam
   "14482|DE": {lat:52.4048, lng:13.0509},  // Potsdam
   "14163|DE": {lat:52.4281, lng:13.2437},  // Berlin (Zehlendorf)
-  "67133|DE": {lat:49.5094, lng:8.2734},   // Maxdorf
-  "06556|DE": {lat:51.3636, lng:11.2900},  // Artern
-  "44577|DE": {lat:51.5553, lng:7.3094},   // Castrop-Rauxel
-  "55411|DE": {lat:49.9675, lng:7.8987},   // Bingen
-  "82178|DE": {lat:48.1600, lng:11.3500},  // Puchheim
-  "82335|DE": {lat:47.9544, lng:11.1849},  // Berg (Starnberger See)
-  "76275|DE": {lat:48.9400, lng:8.4083},   // Ettlingen
-  "79258|DE": {lat:47.9318, lng:7.5595},   // Hartheim
-  "81476|DE": {lat:48.1002, lng:11.5136},  // München
-  "70771|DE": {lat:48.6924, lng:9.1448},   // Leinfelden-Echterdingen
-  "78713|DE": {lat:48.2246, lng:8.3842},   // Schramberg
-  "83137|DE": {lat:47.9527, lng:12.1422},  // Schonstett
-  "59269|DE": {lat:51.7583, lng:8.0434},   // Beckum
-  "08297|DE": {lat:50.6650, lng:13.0720},  // Dorfchemnitz
-  "09526|DE": {lat:50.6672, lng:13.3316},  // Olbernhau
-  "09509|DE": {lat:50.7219, lng:13.1797},  // Pockau-Lengenfeld
-  "09380|DE": {lat:50.7081, lng:12.8426},  // Thalheim
-  "09235|DE": {lat:50.7378, lng:12.8478},  // Burkhardtsdorf
-  "85354|DE": {lat:48.3965, lng:11.7488},  // Freising
-  "48291|DE": {lat:51.9814, lng:7.7861},   // Telgte
-  "63065|DE": {lat:50.1055, lng:8.7623},   // Offenbach
-  "61169|DE": {lat:50.3318, lng:8.7551},   // Friedberg (Hessen)
-  "14480|DE": {lat:52.3960, lng:13.0580},  // Potsdam
-  "46049|DE": {lat:51.4697, lng:6.8516},   // Oberhausen
-  "81677|DE": {lat:48.1380, lng:11.6084},  // München
-  "85640|DE": {lat:48.0556, lng:11.7292},  // Putzbrunn
-  "04509|DE": {lat:51.1694, lng:12.4348},  // Krositz
-  "82166|DE": {lat:48.1131, lng:11.4288},  // Gräfelfing
-  "80636|DE": {lat:48.1577, lng:11.5411},  // München
-  "80639|DE": {lat:48.1627, lng:11.5303},  // München
-  "52078|DE": {lat:50.7795, lng:6.1085},   // Aachen
-  "12161|DE": {lat:52.4675, lng:13.3262},  // Berlin (Steglitz)
-  "01723|DE": {lat:51.0765, lng:13.4811},  // Kesselsdorf
-  "10707|DE": {lat:52.4993, lng:13.3134},  // Berlin (Wilmersdorf)
-  "85356|DE": {lat:48.3511, lng:11.7773},  // München (Flughafen)
-  "94360|DE": {lat:48.9029, lng:12.7706},  // Mitterfels
-  "85716|DE": {lat:48.2795, lng:11.5773},  // Unterschleißheim
-  "82205|DE": {lat:48.1111, lng:11.2914},  // Gilching
-  "81829|DE": {lat:48.1218, lng:11.6853},  // München
-  "80538|DE": {lat:48.1427, lng:11.5949},  // München
-  "81377|DE": {lat:48.0975, lng:11.5218},  // München
-  "8000|HU":  {lat:47.1865, lng:18.4221},  // Székesfehérvár (Ungarn)
   "22047|DE": {lat:53.5667, lng:10.0048},  // Hamburg
-  "82031|DE": {lat:48.0463, lng:11.5279},  // Grünwald
+  "33790|DE": {lat:52.0583, lng:8.3627},   // Halle (Westf.)
+  "44577|DE": {lat:51.5553, lng:7.3094},   // Castrop-Rauxel
+  "46049|DE": {lat:51.4697, lng:6.8516},   // Oberhausen
   "47807|DE": {lat:51.3388, lng:6.5853},   // Krefeld
-  "81539|DE": {lat:48.1115, lng:11.5939},  // München
-  "81369|DE": {lat:48.1015, lng:11.5360},  // München
-  "80331|DE": {lat:48.1357, lng:11.5734},  // München
-  "85635|DE": {lat:47.9866, lng:11.7230},  // Höhenkirchen
+  "48291|DE": {lat:51.9814, lng:7.7861},   // Telgte
+  "52078|DE": {lat:50.7795, lng:6.1085},   // Aachen
+  "59269|DE": {lat:51.7583, lng:8.0434},   // Beckum
+  // ── Österreich ─────────────────────────────────────────────────────────────
+  "1010|AT": {lat:48.2083, lng:16.3731},   // Wien 1. Bezirk
+  "1020|AT": {lat:48.2167, lng:16.4000},   // Wien 2. Bezirk
+  "1030|AT": {lat:48.2000, lng:16.3883},   // Wien 3. Bezirk
+  "1040|AT": {lat:48.1933, lng:16.3683},   // Wien 4. Bezirk
+  "1045|AT": {lat:48.1990, lng:16.3700},   // Wien 4. Bezirk
+  "1050|AT": {lat:48.1867, lng:16.3567},   // Wien 5. Bezirk
+  "1060|AT": {lat:48.1933, lng:16.3517},   // Wien 6. Bezirk
+  "1067|AT": {lat:48.1910, lng:16.3470},   // Wien 6. Bezirk
+  "1070|AT": {lat:48.2000, lng:16.3517},   // Wien 7. Bezirk
+  "1080|AT": {lat:48.2083, lng:16.3517},   // Wien 8. Bezirk
+  "1090|AT": {lat:48.2200, lng:16.3600},   // Wien 9. Bezirk
+  "1100|AT": {lat:48.1750, lng:16.3783},   // Wien 10. Bezirk
+  "1110|AT": {lat:48.1733, lng:16.4383},   // Wien 11. Bezirk
+  "1120|AT": {lat:48.1783, lng:16.3317},   // Wien 12. Bezirk
+  "1130|AT": {lat:48.1833, lng:16.2967},   // Wien 13. Bezirk
+  "1140|AT": {lat:48.1967, lng:16.2917},   // Wien 14. Bezirk
+  "1150|AT": {lat:48.1983, lng:16.3267},   // Wien 15. Bezirk
+  "1160|AT": {lat:48.2100, lng:16.3183},   // Wien 16. Bezirk
+  "1170|AT": {lat:48.2267, lng:16.3100},   // Wien 17. Bezirk
+  "1180|AT": {lat:48.2317, lng:16.3400},   // Wien 18. Bezirk
+  "1190|AT": {lat:48.2517, lng:16.3617},   // Wien 19. Bezirk
+  "1200|AT": {lat:48.2367, lng:16.3783},   // Wien 20. Bezirk
+  "1210|AT": {lat:48.2617, lng:16.4183},   // Wien 21. Bezirk
+  "1220|AT": {lat:48.2267, lng:16.4767},   // Wien 22. Bezirk
+  "1230|AT": {lat:48.1567, lng:16.3067},   // Wien 23. Bezirk
+  "8010|AT": {lat:47.0707, lng:15.4395},   // Graz
+  "8020|AT": {lat:47.0700, lng:15.4200},   // Graz
+  "8045|AT": {lat:47.1033, lng:15.4467},   // Graz
+  "4020|AT": {lat:48.3058, lng:14.2863},   // Linz
+  "5020|AT": {lat:47.8095, lng:13.0550},   // Salzburg
+  "6020|AT": {lat:47.2682, lng:11.3928},   // Innsbruck
+  "3100|AT": {lat:48.2042, lng:15.6242},   // St. Pölten
+  // ── Ungarn ─────────────────────────────────────────────────────────────────
+  "8000|HU":  {lat:47.1865, lng:18.4221},  // Székesfehérvár
+  "1051|HU":  {lat:47.4979, lng:19.0522},  // Budapest V.
+  "1054|HU":  {lat:47.5058, lng:19.0511},  // Budapest V.
+  "1074|HU":  {lat:47.5019, lng:19.0644},  // Budapest VII.
+  "1132|HU":  {lat:47.5206, lng:19.0550},  // Budapest XIII.
+  // ── Schweiz ────────────────────────────────────────────────────────────────
+  "8001|CH": {lat:47.3769, lng:8.5417},    // Zürich
+  "8008|CH": {lat:47.3589, lng:8.5614},    // Zürich-Seefeld
+  "8057|CH": {lat:47.3983, lng:8.5440},    // Zürich-Oerlikon
+  "4052|CH": {lat:47.5497, lng:7.6003},    // Basel
+  "3011|CH": {lat:46.9500, lng:7.4386},    // Bern
+  // ── Ergänzungen – häufige PLZ aus CSV ──────────────────────────────────────
+  "64295|DE": {lat:49.8728, lng:8.6512},   // Darmstadt
+  "64283|DE": {lat:49.8728, lng:8.6512},   // Darmstadt
+  "45768|DE": {lat:51.6558, lng:7.0935},   // Marl
+  "45772|DE": {lat:51.6558, lng:7.0935},   // Marl
+  "15234|DE": {lat:52.3406, lng:14.5500},  // Frankfurt (Oder)
+  "80992|DE": {lat:48.1800, lng:11.5200},  // München-Allach
+  "81245|DE": {lat:48.1450, lng:11.4490},  // München-Pasing
+  "81825|DE": {lat:48.1250, lng:11.6511},  // München-Ramersdorf
+  "52070|DE": {lat:50.7767, lng:6.0839},   // Aachen
+  "52068|DE": {lat:50.7767, lng:6.0839},   // Aachen
+  "52134|DE": {lat:50.8667, lng:6.0917},   // Herzogenrath
+  "52146|DE": {lat:50.8219, lng:6.1333},   // Würselen
+  "52353|DE": {lat:50.8022, lng:6.4861},   // Düren
+  "52382|DE": {lat:50.8419, lng:6.4733},   // Niederzier
+  "35394|DE": {lat:50.5844, lng:8.6783},   // Gießen
+  "63128|DE": {lat:50.0119, lng:8.7833},   // Dietzenbach
+  "40789|DE": {lat:51.0889, lng:6.8989},   // Monheim am Rhein
+  "22525|DE": {lat:53.5984, lng:9.9350},   // Hamburg-Stellingen
+  "22089|DE": {lat:53.5733, lng:10.0519},  // Hamburg-Eilbek
+  "20148|DE": {lat:53.5703, lng:9.9986},   // Hamburg-Rotherbaum
+  "20357|DE": {lat:53.5689, lng:9.9622},   // Hamburg-Altona
+  "20457|DE": {lat:53.5406, lng:9.9886},   // Hamburg-Speicherstadt
+  "49214|DE": {lat:52.1106, lng:8.0744},   // Bad Rothenfelde
+  "49205|DE": {lat:52.1942, lng:7.9756},   // Hasbergen
+  "49525|DE": {lat:52.1917, lng:7.8694},   // Lengerich
+  "48565|DE": {lat:52.1522, lng:7.3344},   // Steinfurt
+  "48477|DE": {lat:52.3072, lng:7.5906},   // Hörstel
+  "48151|DE": {lat:51.9636, lng:7.6092},   // Münster
+  "12489|DE": {lat:52.4336, lng:13.5314},  // Berlin-Adlershof
+  "12043|DE": {lat:52.4800, lng:13.4200},  // Berlin-Neukölln
+  "13088|DE": {lat:52.5497, lng:13.4606},  // Berlin-Weißensee
+  "77933|DE": {lat:48.3417, lng:7.8700},   // Lahr
+  "42697|DE": {lat:51.1667, lng:7.1000},   // Solingen
+  "40699|DE": {lat:51.2206, lng:6.9147},   // Erkrath
+  "82538|DE": {lat:47.8594, lng:11.4789},  // Geretsried
+  "37619|DE": {lat:51.9083, lng:9.5303},   // Hehlen
+  "59348|DE": {lat:51.7667, lng:7.4500},   // Lüdinghausen
+  "58791|DE": {lat:51.2597, lng:7.7683},   // Werdohl
+  "85221|DE": {lat:48.2567, lng:11.4344},  // Dachau
+  "24161|DE": {lat:54.3833, lng:10.0733},  // Altenholz
+  "33334|DE": {lat:51.9025, lng:8.3825},   // Gütersloh
+  "85748|DE": {lat:48.2503, lng:11.6508},  // Garching
+  "85551|DE": {lat:48.1700, lng:11.7811},  // Kirchheim bei München
+  "85567|DE": {lat:48.0428, lng:11.9708},  // Grafing
+  "39108|DE": {lat:52.1406, lng:11.6017},  // Magdeburg
+  "39110|DE": {lat:52.1289, lng:11.6178},  // Magdeburg
+  "14542|DE": {lat:52.3783, lng:12.9358},  // Werder (Havel)
+  "14770|DE": {lat:52.4111, lng:12.5453},  // Brandenburg an der Havel
+  "36088|DE": {lat:50.6681, lng:9.7636},   // Hünfeld
+  "41751|DE": {lat:51.2572, lng:6.3956},   // Viersen
+  "41199|DE": {lat:51.1806, lng:6.4381},   // Mönchengladbach
+  "47443|DE": {lat:51.4528, lng:6.6381},   // Moers
+  "47445|DE": {lat:51.4381, lng:6.6300},   // Moers
+  "44807|DE": {lat:51.4833, lng:7.2167},   // Bochum
+  "45657|DE": {lat:51.6136, lng:7.1972},   // Recklinghausen
+  "50170|DE": {lat:50.8753, lng:6.6953},   // Kerpen
+  "38685|DE": {lat:51.9389, lng:10.3408},  // Langelsheim
+  "72555|DE": {lat:48.5381, lng:9.2817},   // Metzingen
+  "72461|DE": {lat:48.2258, lng:9.0386},   // Albstadt
+  "72760|DE": {lat:48.4917, lng:9.2061},   // Reutlingen
+  "73728|DE": {lat:48.7417, lng:9.2986},   // Esslingen
+  "67292|DE": {lat:49.6475, lng:7.9989},   // Kirchheimbolanden
+  "68623|DE": {lat:49.5978, lng:8.4708},   // Lampertheim
+  "77656|DE": {lat:48.4736, lng:7.9406},   // Offenburg
+  "79364|DE": {lat:48.0997, lng:7.7694},   // Malterdingen
+  "88131|DE": {lat:47.5500, lng:9.6833},   // Lindau
+  "88161|DE": {lat:47.5992, lng:9.8844},   // Lindenberg
+  "87493|DE": {lat:47.5969, lng:10.4336},  // Lauben
+  "93444|DE": {lat:49.1800, lng:12.8497},  // Bad Kötzting
+  "24118|DE": {lat:54.3283, lng:10.1208},  // Kiel (2. PLZ)
+  "18181|DE": {lat:54.2517, lng:12.3458},  // Graal-Müritz
+  "18184|DE": {lat:54.0706, lng:12.1739},  // Roggentin
+  "21493|DE": {lat:53.4083, lng:10.4317},  // Elmenhorst
+  "15711|DE": {lat:52.2892, lng:13.6294},  // Königs Wusterhausen
 };
 
 // ═══════════════════════════════════════════════════════════════════════════════
@@ -590,12 +1072,22 @@ function formatDatumDE(d) {
 // German PLZs sometimes appear without leading zero in the CSV (e.g. "8297" → "08297")
 // Hungarian PLZs are 4-digit and start ≥ 1000.
 // ═══════════════════════════════════════════════════════════════════════════════
-function normalizePLZ(raw) {
+function normalizePLZ(raw, ort) {
   const s = raw.trim();
   if (/^\d{4}$/.test(s)) {
     const padded = '0' + s;
     if (PLZ_COORDS[padded + '|DE']) return { plz: padded, land: 'DE' };
     if (PLZ_COORDS[s + '|HU'])     return { plz: s,      land: 'HU' };
+    if (PLZ_COORDS[s + '|AT'])     return { plz: s,      land: 'AT' };
+    if (PLZ_COORDS[s + '|CH'])     return { plz: s,      land: 'CH' };
+    // Heuristic: detect country from city name
+    const o = (ort || '').toLowerCase();
+    if (/\b(wien|graz|linz|salzburg|innsbruck|klagenfurt|villach|wels)\b/.test(o))
+      return { plz: s, land: 'AT' };
+    if (/\b(zürich|zurich|bern|basel|genf|genève|lausanne|luzern|winterthur)\b/.test(o))
+      return { plz: s, land: 'CH' };
+    if (/\b(budapest|debrecen|miskolc|pécs|győr|székesfehérvár)\b/.test(o))
+      return { plz: s, land: 'HU' };
     return { plz: padded, land: 'DE' }; // best-effort fallback
   }
   return { plz: s, land: 'DE' };
@@ -614,7 +1106,7 @@ function csvParsieren(text) {
     if (!line) continue;
     const f = line.split(';');
     if (f.length < 12) continue;
-    const { plz, land } = normalizePLZ(f[10] || '');
+    const { plz, land } = normalizePLZ(f[10] || '', f[11] || '');
     result.push({
       lager:      (f[0]  || '').trim(),
       auftrags:   (f[1]  || '').trim(),
@@ -744,8 +1236,10 @@ function karteAktualisieren(lieferscheine) {
 
   Object.values(gruppen).forEach(gruppe => {
     const erster = gruppe[0];
-    // Try per-customer coords first (accurate), fall back to PLZ centre
-    const koord = KUNDEN_COORDS[erster.kundennr] || PLZ_COORDS[`${erster.plz}|${erster.land}`];
+    // Lookup order: PLZ-keyed entry from coords.json (geocoded) → hardcoded PLZ_COORDS fallback
+    // Note: customer-number keyed entries are no longer used (coords.json was rebuilt as PLZ-keyed)
+    const plzKey = `${erster.plz}|${erster.land}`;
+    const koord = KUNDEN_COORDS[plzKey] || PLZ_COORDS[plzKey];
     if (!koord) { console.warn('Keine Koordinaten:', erster.kundennr, erster.plz, erster.ort); return; }
 
     lagerSet.add(erster.lager);
